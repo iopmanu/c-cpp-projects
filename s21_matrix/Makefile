@@ -2,31 +2,27 @@
 
 CC=gcc
 CFLAGS=-Wall -Wextra -pedantic
-LDFLAGS=$(shell pkg-config --cflags --libs check)
-GCOVFLAGS=-fprofile-arcs -ftest-coverage
 
 SOURCEDIR=./
 BUILDDIR=build
 SOURCES=$(wildcard $(SOURCEDIR)/*.c)
 HEADFILES=$(wildcard $(HEADERDIR)/*.h)
 OBJFILES=$(patsubst $(SOURCEDIR)/%.c,$(BUILDDIR)/%.o,$(SOURCES))
-EXECUTABLE=release.a
+EXECUTABLE=release
 
 
-s21_decimal.a: clean dir $(EXECUTABLE)
-	mv $(EXECUTABLE) s21_decimal.a
-
-test:
-	$(CC) $(CFLAGS) $(LDFLAGS) s21_other.c s21_mul.c s21_decimal.c s21_compare_decimal.c test_mablever.c
+s21_matrix: clean dir $(EXECUTABLE)
+	mv $(EXECUTABLE) s21_matrix
 
 dir:
 	mkdir $(BUILDDIR)
 
 $(EXECUTABLE): $(OBJFILES)
-	$(CC) $(CFLAGS) $(LDFLAGS) $(CCLDFLAGS) -o $@ $?
+	$(CC) $(CFLAGS) $(CCLDFLAGS) -o $@ $?
 
 $(OBJFILES): $(BUILDDIR)/%.o : $(SOURCEDIR)/%.c $(HEADFILES)
-	$(CC) -c $(CFLAGS) $(LDFLAGS) -o $@ $<
+	$(CC) -c $(CFLAGS) -o $@ $<
 
 clean:
-		-rm -rf *.o *.html *.gcda *.gcno *.css *.a *.gcov *.info *.out *.cfg gcov_main build
+	rm -rf $(BUILDDIR) s21_matrix
+
