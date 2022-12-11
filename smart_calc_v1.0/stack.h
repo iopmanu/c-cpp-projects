@@ -32,14 +32,16 @@ typedef struct stack_s {
 
 enum STACK_CODES stack_ctor(stack_t *stk, enum DATA_INFO _elements_type);
 
-enum STACK_CODES create_node(enum DATA_INFO elements_type, double _real_data,
-                             char _symbol_data, node_t *source);
+enum STACK_CODES create_node(enum DATA_INFO elements_type,
+                             value_type _real_data, another_type _symbol_data,
+                             node_t *source);
 
-enum STACK_CODES push(stack_t *stk, double _real_data, char _symbol_data);
+enum STACK_CODES push(stack_t *stk, value_type _real_data,
+                      another_type _symbol_data);
 
-double pop_number_data(stack_t *stk);
+value_type pop_number_data(stack_t *stk);
 
-char pop_symbol_data(stack_t *stk);
+another_type pop_symbol_data(stack_t *stk);
 
 enum STACK_CODES stack_dtor(stack_t *stk);
 
