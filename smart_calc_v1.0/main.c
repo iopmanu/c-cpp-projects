@@ -14,10 +14,10 @@ int main() {
     code = push(&stk, 6, 94);
 
     print_stack(&stk);
-    
+
     char symbol = pop_symbol_data(&stk);
     printf("\n\n%c\n\n", symbol);
-    
+
     print_stack(&stk);
 
     stack_dtor(&stk);
