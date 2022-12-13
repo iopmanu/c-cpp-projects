@@ -51,6 +51,12 @@ enum FUNCTION_CODE get_function_code(const char *str) {
     return code;
 }
 
+int8_t is_function_code(char symbol) {
+    return (symbol == COS) || (symbol == SIN) || (symbol == ACOS) || (symbol == ASIN) ||
+           (symbol == TAN) || (symbol == ATAN) || (symbol == SQRT) || (symbol == LN) ||
+           (symbol == LOG);
+}
+
 int8_t compare_two_operators_priority(char first, char second) {
     return get_arithmetic_operators_priority(first) <= get_arithmetic_operators_priority(second);
 }
@@ -92,6 +98,21 @@ int8_t expression_contains_function(const char *str) {
     }
 
     return length;
+}
+
+int8_t stack_contains_brackets(stack_t stk) {
+    int8_t result = 0;
+    node_t *ptr = stk.top;
+
+    do {
+        if (is_open_bracket(ptr->symbol_data)) {
+            result = 1;
+        }
+
+        ptr = ptr->next;
+    } while (ptr->next != NULL && !result);
+
+    return result;
 }
 
 int8_t is_function(const char *str, const char *functions, int8_t symbols_quantity) {

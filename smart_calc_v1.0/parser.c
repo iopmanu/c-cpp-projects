@@ -33,19 +33,25 @@ int8_t process_infix(char **infix, char **result, stack_t *stk) {
     char first = **infix;
     int8_t processing_error = 0;
 
-    while (**infix != '\0') {
+    while (**infix) {
         int function_length = 0;
 
-        if (is_number(**infix)) {
-            double_processing(infix, result);
-        } else if (is_unary_operator(infix, first)) {
-        } else if ((function_length = expression_contains_function(*infix)) != 0) {
-            push(stk, POISON_DOUBLE, get_function_code(*infix));
-            *infix += function_length;
-        } else if (is_binary_operator(**infix)) {
-            process_binary_operator(infix, result, stk);
-        } else if (is_open_bracket(**infix)) {
-        } else if (is_close_bracket(**infix)) {
+        if (!processing_error) {
+            if (is_number(**infix)) {
+                double_processing(infix, result);
+                //} else if (is_unary_operator(infix, first)) {
+                //   printf("HERE");
+            } else if ((function_length = expression_contains_function(*infix)) != 0) {
+                push(stk, POISON_DOUBLE, get_function_code(*infix));
+                *infix += function_length;
+            } else if (is_binary_operator(**infix)) {
+                process_binary_operator(infix, result, stk);
+            } else if (is_open_bracket(**infix)) {
+                push(stk, POISON_DOUBLE, **infix);
+                (*infix)++;
+            } else if (is_close_bracket(**infix)) {
+                process_close_bracket(infix, result, stk, &processing_error);
+            }
         } else {
             (*infix)++;
         }
@@ -54,10 +60,52 @@ int8_t process_infix(char **infix, char **result, stack_t *stk) {
     return processing_error;
 }
 
+void process_close_bracket(char **infix, char **result, stack_t *stk, int8_t *error_code) {
+    char top_symbol = '\0';
+
+    if (stack_contains_brackets(*stk)) {
+        while (!is_open_bracket(stk->top->symbol_data) && !(*error_code)) {
+            top_symbol = stk->top->symbol_data;
+
+            if (is_close_bracket(top_symbol)) {
+                *error_code = 1;
+            } else {
+                top_symbol = pop_symbol_data(stk);
+                char operator_string[3];
+                snprintf(operator_string, sizeof(operator_string), " %c", top_symbol);
+
+                strncat(*result, operator_string, 4);
+            }
+        }
+    } else {
+        *error_code = 1;
+    }
+
+    if (!(*error_code) && is_function_code(stk->top->symbol_data)) {
+        top_symbol = stk->top->symbol_data;
+        char function_string[3];
+        snprintf(function_string, sizeof(function_string), " %c", top_symbol);
+
+        strncat(*result, function_string, 4);
+        (*infix)++;
+    }
+}
+
 void process_binary_operator(char **infix, char **result, stack_t *stk) {
     char operator=(is_mod(*infix)) ? '%' : **infix;
 
-    while (compare_two_operators_priority(operator, stk->top->symbol_data)) {
+    if (operator== '%') {
+        *infix += 3;
+    } else {
+        (*infix)++;
+    }
+
+    if (stk->elements_quantity == 0) {
+        push(stk, POISON_DOUBLE, operator);
+        return;
+    }
+
+    while (!compare_two_operators_priority(operator, stk->top->symbol_data)) {
         char operator_top = pop_symbol_data(stk);
         char operator_string[3];
         snprintf(operator_string, sizeof(operator_string), " %c", operator_top);
@@ -69,12 +117,6 @@ void process_binary_operator(char **infix, char **result, stack_t *stk) {
     char *space = " ";
 
     strncat(*result, space, 2);
-
-    if (operator== '%') {
-        *infix += 3;
-    } else {
-        (*infix)++;
-    }
 }
 
 void double_processing(char **infix, char **res) {
@@ -85,7 +127,7 @@ void double_processing(char **infix, char **res) {
         int number_length = get_length_integer_part(*infix, strlen(*infix));
         int mantissa_length = get_length_mantissa(*infix, number_length);
 
-        snprintf(string_number, MAX_FLOAT, "%.*lf", mantissa_length, number);
+        snprintf(string_number, 50, "%.*lf", mantissa_length, number);
         strncat(*res, string_number, strlen(string_number));
         *infix += number_length;
 

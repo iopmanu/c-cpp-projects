@@ -16,5 +16,7 @@ char *parse_infix(char *str);
 
 void double_processing(char **infix, char **res);
 
+void process_close_bracket(char **infix, char **result, stack_t *stk, int8_t *error_code);
+
 void process_binary_operator(char **infix, char **result, stack_t *stk);
 #endif  // PARSER_H_

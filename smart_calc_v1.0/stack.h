@@ -13,12 +13,7 @@ enum DATA_INFO { UNINITIALIZED, REAL_NUMBER_DATA, SYMBOL_DATA };
 
 enum POISON_VALUES { POISON_CHAR = 1, POISON_DOUBLE = -228228666 };
 
-enum STACK_CODES {
-    SUCCESS,
-    NULL_POINTER,
-    ALLOCATION_ERROR,
-    INITIALIZATION_ERROR
-};
+enum STACK_CODES { SUCCESS, NULL_POINTER, ALLOCATION_ERROR, INITIALIZATION_ERROR };
 
 typedef struct node_s {
     value_type data;
@@ -34,12 +29,10 @@ typedef struct stack_s {
 
 enum STACK_CODES stack_ctor(stack_t *stk, enum DATA_INFO _elements_type);
 
-enum STACK_CODES create_node(enum DATA_INFO elements_type,
-                             value_type _real_data, another_type _symbol_data,
-                             node_t *source);
+enum STACK_CODES create_node(enum DATA_INFO elements_type, value_type _real_data,
+                             another_type _symbol_data, node_t *source);
 
-enum STACK_CODES push(stack_t *stk, value_type _real_data,
-                      another_type _symbol_data);
+enum STACK_CODES push(stack_t *stk, value_type _real_data, another_type _symbol_data);
 
 value_type pop_number_data(stack_t *stk);
 

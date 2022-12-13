@@ -33,8 +33,11 @@ int8_t is_unary_operator(char **symbol, char first);
 
 int8_t expression_contains_function(const char *str);
 
-int8_t is_function(const char *str, const char *functions,
-                   int8_t symbols_quantity);
+int8_t stack_contains_brackets(stack_t stk);
+
+int8_t is_function_code(char symbol);
+
+int8_t is_function(const char *str, const char *functions, int8_t symbols_quantity);
 
 int8_t is_close_bracket(char symbol);
 

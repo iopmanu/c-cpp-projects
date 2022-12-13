@@ -1,26 +1,12 @@
-#include "stack.h"
+#include "parser.h"
 #include <stdio.h>
 
 void print_stack(stack_t *stk);
 
 int main() {
-    stack_t stk;
-    stack_ctor(&stk, SYMBOL_DATA);
-
-    enum STACK_CODES code = push(&stk, 2, 81);
-    code = push(&stk, 3, 5);
-    code = push(&stk, 4, 3);
-    code = push(&stk, 5, 82);
-    code = push(&stk, 6, 94);
-
-    print_stack(&stk);
-
-    char symbol = pop_symbol_data(&stk);
-    printf("\n\n%c\n\n", symbol);
-
-    print_stack(&stk);
-
-    stack_dtor(&stk);
+    char *rest = "1+2+3*3/5+8-10";
+    char *result = parse_infix(rest);
+    printf("%s", result);
     return 0;
 }
 

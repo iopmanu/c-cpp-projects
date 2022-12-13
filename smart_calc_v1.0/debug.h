@@ -1,6 +1,8 @@
 #ifndef DEBUG_H_
 #define DEBUG_H_
 
+#define NDEBUG
+
 #include "stack.h"
 #include <assert.h>
 
