@@ -15,8 +15,7 @@ char *parse_infix(char *str) {
         else {
             char top_operator = pop_symbol_data(&stk);
             char operator_string[3];
-            snprintf(operator_string, sizeof(operator_string), " %c",
-                     top_operator);
+            snprintf(operator_string, sizeof(operator_string), " %c", top_operator);
             strncat(result, operator_string, 4);
         }
     }
@@ -40,8 +39,7 @@ int8_t process_infix(char **infix, char **result, stack_t *stk) {
         if (is_number(**infix)) {
             double_processing(infix, result);
         } else if (is_unary_operator(infix, first)) {
-        } else if ((function_length = expression_contains_function(*infix)) !=
-                   0) {
+        } else if ((function_length = expression_contains_function(*infix)) != 0) {
             push(stk, POISON_DOUBLE, get_function_code(*infix));
             *infix += function_length;
         } else if (is_binary_operator(**infix)) {

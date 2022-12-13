@@ -9,8 +9,7 @@ int get_length_mantissa(const char *str, int num_length) {
 
     int length = 0;
 
-    for (int i = dot_position;
-         (dot_position != 0) && (i < num_length) && (is_number(str[i]));
+    for (int i = dot_position; (dot_position != 0) && (i < num_length) && (is_number(str[i]));
          i++, length++)
         ;
 
@@ -20,8 +19,7 @@ int get_length_mantissa(const char *str, int num_length) {
 int get_length_integer_part(const char *str, int num_length) {
     int length = 0;
 
-    for (int i = 0; (i < num_length) && (is_number(str[i]) || is_dot(str[i]));
-         i++, length++)
+    for (int i = 0; (i < num_length) && (is_number(str[i]) || is_dot(str[i])); i++, length++)
         ;
 
     return length;
@@ -54,8 +52,7 @@ enum FUNCTION_CODE get_function_code(const char *str) {
 }
 
 int8_t compare_two_operators_priority(char first, char second) {
-    return get_arithmetic_operators_priority(first) <=
-           get_arithmetic_operators_priority(second);
+    return get_arithmetic_operators_priority(first) <= get_arithmetic_operators_priority(second);
 }
 
 int8_t get_arithmetic_operators_priority(char operator) {
@@ -73,21 +70,19 @@ int8_t get_arithmetic_operators_priority(char operator) {
 }
 
 int8_t is_binary_operator(char symbol) {
-    return (symbol == '-') || (symbol == '+') || (symbol == '*') ||
-           (symbol == '/');
+    return (symbol == '-') || (symbol == '+') || (symbol == '*') || (symbol == '/');
 }
 
 int8_t is_unary_operator(char **symbol, char first) {
     return (**symbol == '+' || **symbol == '-') &&
-           (**symbol == first ||
-            (!is_number(*(*symbol - 1) && !is_number(*(*symbol - 2)))));
+           (**symbol == first || (!is_number(*(*symbol - 1) && !is_number(*(*symbol - 2)))));
 }
 
 int8_t expression_contains_function(const char *str) {
     int length = 0;
 
-    if (is_function(str, "cos", 3) || is_function(str, "sin", 3) ||
-        is_function(str, "tan", 3) || is_function(str, "log", 3)) {
+    if (is_function(str, "cos", 3) || is_function(str, "sin", 3) || is_function(str, "tan", 3) ||
+        is_function(str, "log", 3)) {
         length = 3;
     } else if (is_function(str, "ln", 2)) {
         length = 2;
@@ -99,8 +94,7 @@ int8_t expression_contains_function(const char *str) {
     return length;
 }
 
-int8_t is_function(const char *str, const char *functions,
-                   int8_t symbols_quantity) {
+int8_t is_function(const char *str, const char *functions, int8_t symbols_quantity) {
     return !strncmp(str, functions, symbols_quantity);
 }
 
