@@ -29,6 +29,8 @@ int8_t get_arithmetic_operators_priority(char operator);
 
 int8_t is_binary_operator(char symbol);
 
+int8_t is_unary_operator(char **symbol, char first);
+
 int8_t expression_contains_function(const char *str);
 
 int8_t is_function(const char *str, const char *functions,
@@ -39,6 +41,8 @@ int8_t is_close_bracket(char symbol);
 int8_t is_open_bracket(char symbol);
 
 int8_t is_number(char symbol);
+
+int8_t is_mod(char *function);
 
 int8_t is_dot(char symbol);
 

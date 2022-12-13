@@ -110,4 +110,6 @@ int8_t is_open_bracket(char symbol) { return symbol == '('; }
 
 int8_t is_number(char symbol) { return (symbol >= '0') && (symbol <= '9'); }
 
+int8_t is_mod(char *function) { return !strncmp(function, "mod", 3); }
+
 int8_t is_dot(char symbol) { return symbol == '.'; }
