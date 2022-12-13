@@ -1,4 +1,31 @@
-#include "parser.h"
+#include "helper_parser.h"
+
+int get_length_mantissa(const char *str, int num_length) {
+    int dot_position = 0;
+
+    for (int i = 0; i < num_length && dot_position == 0; i++) {
+        if (is_dot(str[i])) dot_position = i + 1;
+    }
+
+    int length = 0;
+
+    for (int i = dot_position;
+         (dot_position != 0) && (i < num_length) && (is_number(str[i]));
+         i++, length++)
+        ;
+
+    return length;
+}
+
+int get_length_integer_part(const char *str, int num_length) {
+    int length = 0;
+
+    for (int i = 0; (i < num_length) && (is_number(str[i]) || is_dot(str[i]));
+         i++, length++)
+        ;
+
+    return length;
+}
 
 enum FUNCTION_CODE get_function_code(const char *str) {
     enum FUNCTION_CODE code;
@@ -50,6 +77,12 @@ int8_t is_binary_operator(char symbol) {
            (symbol == '/');
 }
 
+int8_t is_unary_operator(char **symbol, char first) {
+    return (**symbol == '+' || **symbol == '-') &&
+           (**symbol == first ||
+            (!is_number(*(*symbol - 1) && !is_number(*(*symbol - 2)))));
+}
+
 int8_t expression_contains_function(const char *str) {
     int length = 0;
 
@@ -76,3 +109,5 @@ int8_t is_close_bracket(char symbol) { return symbol == ')'; }
 int8_t is_open_bracket(char symbol) { return symbol == '('; }
 
 int8_t is_number(char symbol) { return (symbol >= '0') && (symbol <= '9'); }
+
+int8_t is_dot(char symbol) { return symbol == '.'; }

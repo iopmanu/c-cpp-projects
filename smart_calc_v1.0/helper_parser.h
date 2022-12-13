@@ -1,5 +1,5 @@
-#ifndef PARSER_H_
-#define PARSER_H_
+#ifndef HELPER_PARSER_H_
+#define HELPER_PARSER_H_
 
 #include <string.h>
 
@@ -16,6 +16,10 @@ enum FUNCTION_CODE {
     LOG = 'l',
     LN = 'L',
 };
+
+int get_length_mantissa(const char *str, int num_length);
+
+int get_length_integer_part(const char *str, int num_length);
 
 enum FUNCTION_CODE get_function_code(const char *str);
 
@@ -36,4 +40,6 @@ int8_t is_open_bracket(char symbol);
 
 int8_t is_number(char symbol);
 
-#endif  // PARSER_H_
+int8_t is_dot(char symbol);
+
+#endif  // HELPER_PARSER_H_
