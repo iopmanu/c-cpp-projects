@@ -32,11 +32,11 @@ void s21_remove_matrix(matrix_t *A) {
 
 int s21_eq_matrix(matrix_t *A, matrix_t *B) {
     CHECK((A == NULL) || (B == NULL), S21_INVALID_MATRIX);
+    CHECK((A->matrix == NULL) || (B->matrix == NULL), S21_INVALID_MATRIX);
 
     CHECK((A->rows < 1) || (A->columns < 1), S21_INVALID_MATRIX);
     CHECK((B->rows < 1) || (B->columns < 1), S21_INVALID_MATRIX);
-    CHECK((A->rows != B->rows) || (A->columns != B->columns),
-          0);
+    CHECK((A->rows != B->rows) || (A->columns != B->columns), 0);
 
     int8_t comparison_result = SUCCESS;
 
@@ -51,10 +51,8 @@ int s21_eq_matrix(matrix_t *A, matrix_t *B) {
 }
 
 int s21_sum_matrix(matrix_t *A, matrix_t *B, matrix_t *result) {
-    CHECK((A == NULL) || (B == NULL) || (A->matrix == NULL) ||
-              (B->matrix == NULL),
-          S21_INVALID_MATRIX);
-
+    CHECK((A == NULL) || (B == NULL), S21_INVALID_MATRIX);
+    CHECK((A->matrix == NULL) || (B->matrix == NULL), S21_INVALID_MATRIX);
     CHECK((A->rows < 1) || (A->columns < 1), S21_INVALID_MATRIX);
     CHECK((B->rows < 1) || (B->columns < 1), S21_INVALID_MATRIX);
     CHECK((A->rows != B->rows) || (A->columns != B->columns),
@@ -73,10 +71,8 @@ int s21_sum_matrix(matrix_t *A, matrix_t *B, matrix_t *result) {
 }
 
 int s21_sub_matrix(matrix_t *A, matrix_t *B, matrix_t *result) {
-    CHECK((A == NULL) || (B == NULL) || (A->matrix == NULL) ||
-              (B->matrix == NULL),
-          S21_INVALID_MATRIX);
-
+    CHECK((A == NULL) || (B == NULL), S21_INVALID_MATRIX);
+    CHECK((A->matrix == NULL) || (B->matrix == NULL), S21_INVALID_MATRIX);
     CHECK((A->rows < 1) || (A->columns < 1), S21_INVALID_MATRIX);
     CHECK((B->rows < 1) || (B->columns < 1), S21_INVALID_MATRIX);
     CHECK((A->rows != B->rows) || (A->columns != B->columns),
@@ -95,7 +91,8 @@ int s21_sub_matrix(matrix_t *A, matrix_t *B, matrix_t *result) {
 }
 
 int s21_mult_number(matrix_t *A, double number, matrix_t *result) {
-    CHECK((A == NULL) || (A->matrix == NULL), S21_INVALID_MATRIX);
+    CHECK((A == NULL), S21_INVALID_MATRIX);
+    CHECK((A->matrix == NULL), S21_INVALID_MATRIX);
     CHECK((A->rows < 1) || (A->columns < 1), S21_INVALID_MATRIX);
 
     enum S21_MATRIX_CODE code = s21_create_matrix(A->rows, A->columns, result);
@@ -111,10 +108,8 @@ int s21_mult_number(matrix_t *A, double number, matrix_t *result) {
 }
 
 int s21_mult_matrix(matrix_t *A, matrix_t *B, matrix_t *result) {
-    CHECK((A == NULL) || (B == NULL) || (A->matrix == NULL) ||
-              (B->matrix == NULL),
-          S21_INVALID_MATRIX);
-
+    CHECK((A == NULL) || (B == NULL), S21_INVALID_MATRIX);
+    CHECK((A->matrix == NULL) || (B->matrix == NULL), S21_INVALID_MATRIX);
     CHECK((A->rows < 1) || (A->columns < 1), S21_INVALID_MATRIX);
     CHECK((B->rows < 1) || (B->columns < 1), S21_INVALID_MATRIX);
     CHECK(A->columns != B->rows, S21_MATH_OPERATIONS_ERROR);
@@ -150,7 +145,8 @@ int s21_transpose(matrix_t *A, matrix_t *result) {
 }
 
 int s21_determinant(matrix_t *A, double *result) {
-    CHECK((A == NULL) || (A->matrix == NULL), S21_INVALID_MATRIX);
+    CHECK((A == NULL), S21_INVALID_MATRIX);
+    CHECK((A->matrix == NULL), S21_INVALID_MATRIX);
     CHECK((A->rows < 1) || (A->columns < 1), S21_INVALID_MATRIX);
     CHECK((A->rows != A->columns), S21_MATH_OPERATIONS_ERROR);
 
@@ -189,7 +185,8 @@ double s21_determinant_recursive(matrix_t *A) {
 
 enum S21_MATRIX_CODE s21_get_minor(int row, int column, matrix_t *A,
                                    matrix_t *result) {
-    CHECK((A == NULL) || (A->matrix == NULL), S21_INVALID_MATRIX);
+    CHECK((A == NULL), S21_INVALID_MATRIX);
+    CHECK((A->matrix == NULL), S21_INVALID_MATRIX);
     CHECK((A->rows < 1) || (A->columns < 1), S21_INVALID_MATRIX);
 
     enum S21_MATRIX_CODE code =
@@ -212,12 +209,18 @@ enum S21_MATRIX_CODE s21_get_minor(int row, int column, matrix_t *A,
 }
 
 int s21_calc_complements(matrix_t *A, matrix_t *result) {
-    CHECK((A == NULL) || (A->matrix == NULL), S21_INVALID_MATRIX);
+    CHECK((A == NULL), S21_INVALID_MATRIX);
+    CHECK((A->matrix == NULL), S21_INVALID_MATRIX);
     CHECK((A->rows < 1) || (A->columns < 1), S21_INVALID_MATRIX);
     CHECK((A->rows != A->columns), S21_MATH_OPERATIONS_ERROR);
 
     enum S21_MATRIX_CODE code = s21_create_matrix(A->rows, A->columns, result);
     CHECK(code, S21_INVALID_MATRIX);
+
+    if (A->rows == 1) {
+        result->matrix[0][0] = A->matrix[0][0];
+        return S21_SUCCESS;
+    }
 
     matrix_t minor;
 

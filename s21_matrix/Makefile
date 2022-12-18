@@ -1,4 +1,4 @@
-CC_FLAGS=-Wall -Werror -Wextra 
+CC_FLAGS=-Wall -Wextra -Werror 
 OS=$(shell uname -s)
 
 ifeq ($(OS),Linux)
