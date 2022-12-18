@@ -1,28 +1,44 @@
-.PHONY: all clean
+CC_FLAGS=-Wall -Werror -Wextra 
+OS=$(shell uname -s)
 
-CC=gcc
-CFLAGS=-Wall -Wextra -pedantic
+ifeq ($(OS),Linux)
+	TEST_FLAGS=-lcheck -pthread -lcheck_pic -pthread -lrt -lm -lsubunit
+	CC_FLAGS+=-lm
+else
+	TEST_FLAGS=-lcheck
+endif
 
-SOURCEDIR=./
-BUILDDIR=build
-SOURCES=$(wildcard $(SOURCEDIR)/*.c)
-HEADFILES=$(wildcard $(HEADERDIR)/*.h)
-OBJFILES=$(patsubst $(SOURCEDIR)/%.c,$(BUILDDIR)/%.o,$(SOURCES))
-EXECUTABLE=release
+all: s21_matrix.a
 
+rebuild: clean all
 
-s21_matrix: clean dir $(EXECUTABLE)
-	mv $(EXECUTABLE) s21_matrix
+s21_matrix.a: s21_matrix.o
+	ar rcs s21_matrix.a s21_matrix.o
+	ranlib s21_matrix.a
+	rm -f *.o
 
-dir:
-	mkdir $(BUILDDIR)
+s21_matrix.o:
+	gcc -c $(CC_FLAGS) s21_matrix.c
 
-$(EXECUTABLE): $(OBJFILES)
-	$(CC) $(CFLAGS) $(CCLDFLAGS) -o $@ $?
+test: clean s21_matrix.o
+	gcc -c $(CC_FLAGS) s21_tests.c
+	gcc $(CC_FLAGS) $(TEST_FLAGS) s21_tests.o s21_matrix.o -o tests.out 
+	./tests.out
 
-$(OBJFILES): $(BUILDDIR)/%.o : $(SOURCEDIR)/%.c $(HEADFILES)
-	$(CC) -c $(CFLAGS) -o $@ $<
+gcov_report: 
+	gcc $(CC_FLAGS) --coverage -o make_report.out s21_tests.c s21_matrix.c $(TEST_FLAGS)
+	./make_report.out
+	lcov -t "make_report" -o make_report.info -c -d . 
+	genhtml -o report make_report.info
+
+style:
+	cp ../materials/linters/CPPLINT.cfg CPPLINT.cfg
+	python3 ../materials/linters/cpplint.py --extension=c *.c *.h
+
+leaks: test
+	CK_FORK=no leaks --atExit -- ./tests.out
 
 clean:
-	rm -rf $(BUILDDIR) s21_matrix
-
+	rm -rf *.o *.gch *.out *.gcno *.gcda *.info *.gcov *cfg *.a
+	rm -rf report/
+	rm -rf temp/

@@ -10,9 +10,9 @@
 #define FAILURE 0
 
 enum S21_MATRIX_CODE {
-    S21_SUCCESS,
-    S21_INVALID_MATRIX,
-    S21_MATH_OPERATIONS_ERROR,
+    S21_SUCCESS = 0,
+    S21_INVALID_MATRIX = 1,
+    S21_MATH_OPERATIONS_ERROR = 2,
 };
 
 #define CHECK(condition, code) \
