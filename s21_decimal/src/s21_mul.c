@@ -10,66 +10,61 @@ enum MATH_OPERATIONS_CODE {
   S21_ZERO_DIVISION = 3,
 };
 
-int s21_mul(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
-  memset(result, 0, sizeof(*result));
+int s21_mul(s21_decimal first, s21_decimal second, s21_decimal *_result) {
+  big_decimal value_1, value_2, result;
+  convert_to_big(first, &value_1);
+  convert_to_big(second, &value_2);
+  init(&result);
+
   enum MATH_OPERATIONS_CODE code = S21_OK;
+  // s21_print_decimal(value_1);
+  // s21_print_decimal(value_2);
+  int first_rank = get_exponent_rang(value_1);
+  int second_rank = get_exponent_rang(value_2);
 
-  int main_bit = find_main_bit(value_1);
-  s21_decimal result_copy = {{0, 0, 0, 0}};
-  // printf("%d ", main_bit);
+  // printf("%d\n\n\n", main_bit);
 
-  for (int i = 0; i <= main_bit; i++) {
-    init(&result_copy);
-
-    if (get_bit(value_1, i)) {
-      result_copy = value_2;
-      code = offset_left(&result_copy, i);
-      code = add_bit_by_bit(*result, result_copy, result);
+  for (int i = 0; i < 160; i++) {
+    if (get_bit(value_2, i)) {
+      add_big(result, value_1, &result);
     }
+    offset_left(&value_1);
   }
 
-  if (code != S21_OK) {
-    if (handle_sign(value_1, value_2)) {
-      code = S21_MINUS_INF;
-    } else {
+  set_exponent_rang(&result, first_rank + second_rank);
+  set_sign_bit(&result, handle_sign(value_1, value_2));
+  code = round_decimal(&result, 0, 0);
+
+  if (is_overflow(result) || get_exponent_rang(result) > 28) {
+    // code = round_decimal(result, 2);
+
+    if (code) {
       code = S21_INF;
+      if (get_sign_bit(result)) {
+        code = S21_MINUS_INF;
+      }
+      init(&result);
     }
-    init(result);
-  } else {
-    set_exponent_rang(result, handle_exponent_rang(value_1, value_2));
-    set_sign_bit(result, handle_sign(value_1, value_2));
   }
 
+  convert_to_s21(result, _result);
   return code;
 }
 
-int8_t handle_sign(s21_decimal value_1, s21_decimal value_2) {
+int8_t handle_sign(big_decimal value_1, big_decimal value_2) {
   return (get_sign_bit(value_1) ^ get_sign_bit(value_2));
 }
 
-uint8_t handle_exponent_rang(s21_decimal value_1, s21_decimal value_2) {
+uint8_t handle_exponent_rang(big_decimal value_1, big_decimal value_2) {
   return get_exponent_rang(value_1) + get_exponent_rang(value_2);
 }
 
-int offset_left(s21_decimal *source, int offset) {
+int offset_left(big_decimal *source) {
   enum MATH_OPERATIONS_CODE code = S21_OK;
-  if ((find_main_bit(*source) + offset) > (PIECE_AMOUNT * NUMBER_PICES - 1)) {
-    code = S21_INF;
-  } else {
-    for (int i = 0; i < offset; i++) {
-      source->bits[0] <<= 1;
-      source->bits[1] <<= 1;
-      source->bits[2] <<= 1;
-
-      if (get_bit(*source, 31)) {
-        set_bit(source, 32, 1);
-      }
-
-      if (get_bit(*source, 64)) {
-        set_bit(source, 64, 1);
-      }
-    }
+  for (int i = 159; i > 0; i--) {
+    set_bit(source, i, get_bit(*source, i - 1));
   }
+  set_bit(source, 0, 0);
 
   return code;
 }

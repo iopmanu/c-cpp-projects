@@ -18,13 +18,13 @@ enum S21_DECIMAL_COMPARE {
   S21_VARIANT = 2,  // for not binary functions results
 };
 
-int8_t s21_is_zero_decimal(s21_decimal source);
+int8_t is_zero_decimal(big_decimal source);
 
 int8_t s21_is_less(s21_decimal first, s21_decimal second);
 
-int8_t s21_compare_less(s21_decimal first, s21_decimal second);
+int8_t compare_less(big_decimal first, big_decimal second);
 
-int8_t s21_sign_comparison(s21_decimal first, s21_decimal second);
+int8_t sign_comparison(big_decimal first, big_decimal second);
 
 int8_t s21_is_equal(s21_decimal first, s21_decimal second);
 

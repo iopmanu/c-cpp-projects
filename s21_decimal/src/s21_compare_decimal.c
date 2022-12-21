@@ -1,51 +1,45 @@
 #include "s21_compare_decimal.h"
 
-int8_t s21_is_less(s21_decimal first, s21_decimal second) {
+int8_t s21_is_less(s21_decimal value_1, s21_decimal value_2) {
   int8_t comparison_result = S21_FALSE;
 
-  if (s21_compare_less(first, second)) {
+  big_decimal first, second;
+  convert_to_big(value_1, &first);
+  convert_to_big(value_2, &second);
+
+  if (compare_less(first, second)) {
     comparison_result = S21_TRUE;
   }
 
   return comparison_result;
 }
 
-int8_t s21_compare_less(s21_decimal first, s21_decimal second) {
+int8_t compare_less(big_decimal first, big_decimal second) {
   int8_t comparison_result = S21_TRUE;
-  s21_decimal first_copy = first;
-  s21_decimal second_copy = second;
+  s21_decimal value_1, value_2;
+  convert_to_s21(first, &value_1);
+  convert_to_s21(second, &value_2);
 
   CHECK_EXPONENT(get_exponent_rang(first) != get_exponent_rang(second), first,
                  second);
 
-  if (s21_is_zero_decimal(first) && s21_is_zero_decimal(second)) {
+  if (is_zero_decimal(first) && is_zero_decimal(second)) {
     return S21_FALSE;
-  } else if (s21_sign_comparison(first, second) == S21_TRUE) {
+  } else if (sign_comparison(first, second) == S21_TRUE) {
     comparison_result = S21_TRUE;
 
-  } else if (s21_sign_comparison(first, second) == S21_VARIANT) {
+  } else if (sign_comparison(first, second) == S21_VARIANT) {
     comparison_result = S21_FALSE;
 
-  } else if (s21_sign_comparison(first, second) == S21_FALSE) {
-    for (int bits_order = 2; (bits_order >= 0); bits_order--) {
-      if (first.bits[bits_order] > second.bits[bits_order]) {
-        comparison_result = S21_FALSE;
-        break;
-      } else if (first.bits[bits_order] < second.bits[bits_order]) {
-        comparison_result = S21_TRUE;
-        break;
-      }
-    }
+  } else if (sign_comparison(first, second) == S21_FALSE) {
+    comparison_result = number_less(first, second);
 
     if (get_sign_bit(first) == 1 && get_sign_bit(second) == 1) {
       comparison_result = (!comparison_result);
     }
   }
 
-  first = first_copy;
-  second = second_copy;
-
-  if (s21_is_equal(first, second)) {
+  if (s21_is_equal(value_1, value_2)) {
     comparison_result = S21_FALSE;
   }
 
@@ -55,7 +49,7 @@ int8_t s21_compare_less(s21_decimal first, s21_decimal second) {
 /* If first variable has sign '-' and second has sign '+' return S21_TRUE
    If second variable has sign '-' and first has sign '+' return S21_VARIANT
    If signs are the same return S21_FALSE                                   */
-int8_t s21_sign_comparison(s21_decimal first, s21_decimal second) {
+int8_t sign_comparison(big_decimal first, big_decimal second) {
   int8_t sign_comparison_result = S21_FALSE;
 
   if (get_sign_bit(first) && !get_sign_bit(second)) {
@@ -67,10 +61,14 @@ int8_t s21_sign_comparison(s21_decimal first, s21_decimal second) {
   return sign_comparison_result;
 }
 
-int8_t s21_is_equal(s21_decimal first, s21_decimal second) {
+int8_t s21_is_equal(s21_decimal value_1, s21_decimal value_2) {
   int8_t equal_result = S21_FALSE;
 
-  if (s21_is_zero_decimal(first) && s21_is_zero_decimal(second)) {
+  big_decimal first, second;
+  convert_to_big(value_1, &first);
+  convert_to_big(value_2, &second);
+
+  if (is_zero_decimal(first) && is_zero_decimal(second)) {
     return S21_TRUE;
   }
 
@@ -78,7 +76,8 @@ int8_t s21_is_equal(s21_decimal first, s21_decimal second) {
                  second);
 
   if (first.bits[0] == second.bits[0] && first.bits[1] == second.bits[1] &&
-      first.bits[2] == second.bits[2] && first.bits[3] == second.bits[3]) {
+      first.bits[2] == second.bits[2] &&
+      first.bits[INFORMATION_BIT] == second.bits[INFORMATION_BIT]) {
     equal_result = S21_TRUE;
   }
 
@@ -101,6 +100,6 @@ int8_t s21_is_greater_or_equal(s21_decimal first, s21_decimal second) {
   return (s21_is_greater(first, second) || s21_is_equal(first, second));
 }
 
-int8_t s21_is_zero_decimal(s21_decimal source) {
+int8_t is_zero_decimal(big_decimal source) {
   return (source.bits[0] == 0 && source.bits[1] == 0 && source.bits[2] == 0);
 }
