@@ -9,7 +9,7 @@ enum STACK_CODES stack_ctor(stk_t *stk, enum DATA_INFO _elements_type) {
 }
 
 enum STACK_CODES create_node(enum DATA_INFO elements_type, value_type _real_data,
-                             another_type _symbol_data, node_t *source) {
+                             another_type *_symbol_data, node_t *source) {
     CHECK_BAD_PTR(source, ALLOCATION_ERROR);
 
     if (elements_type == REAL_NUMBER_DATA) {
@@ -25,7 +25,7 @@ enum STACK_CODES create_node(enum DATA_INFO elements_type, value_type _real_data
     return SUCCESS;
 }
 
-enum STACK_CODES push(stk_t *stk, value_type _real_data, another_type _symbol_data) {
+enum STACK_CODES push(stk_t *stk, value_type _real_data, another_type *_symbol_data) {
     CHECK_BAD_PTR(stk, NULL_POINTER);
     enum STACK_CODES code = SUCCESS;
 
@@ -54,10 +54,17 @@ value_type pop_number_data(stk_t *stk) {
     return _data;
 }
 
-another_type pop_symbol_data(stk_t *stk) {
-    CHECK_BAD_PTR(stk, NULL_POINTER);
+another_type *top_symbol(stk_t *stk) {
+    CHECK_BAD_PTR(stk, POISON_PTR);
 
-    another_type _data = stk->top->symbol_data;
+    another_type *_data = stk->top->symbol_data;
+    return _data;
+}
+
+another_type *pop_symbol_data(stk_t *stk) {
+    CHECK_BAD_PTR(stk, POISON_PTR);
+
+    another_type *_data = stk->top->symbol_data;
 
     node_t *top_copy = stk->top;
     stk->top = stk->top->next;

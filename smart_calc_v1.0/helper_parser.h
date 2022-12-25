@@ -16,12 +16,6 @@ enum FUNCTION_CODE {
     LN = 'L',
 };
 
-typedef struct token {
-    double number;
-    char operator;
-    int8_t is_number;
-} token_t;
-
 void writing_operator(token_t *current_source, char operator, int * current, int shift);
 
 int8_t check_function(const char *string, const char *function, int *shift);

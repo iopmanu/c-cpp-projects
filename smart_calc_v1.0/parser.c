@@ -1,5 +1,7 @@
 #include "parser.h"
 
+token_t *postfix_converter(token_t *infix, int infix_length, int *postifx_length) {}
+
 token_t *input_tokenizer(char *expression, int *length) {
     token_t *data = calloc(strlen(expression), sizeof(token_t));
 
