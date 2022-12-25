@@ -43,7 +43,8 @@ int s21_eq_matrix(matrix_t *A, matrix_t *B) {
     for (int i = 0; (i < A->rows) && (comparison_result == SUCCESS); i++) {
         for (int j = 0; (j < B->columns) && (comparison_result == SUCCESS);
              j++) {
-            if (A->matrix[i][j] != B->matrix[i][j]) comparison_result = FAILURE;
+            if (fabs(A->matrix[i][j] - B->matrix[i][j]) > 1e-7)
+                comparison_result = FAILURE;
         }
     }
 
@@ -99,7 +100,7 @@ int s21_mult_number(matrix_t *A, double number, matrix_t *result) {
     CHECK(code, S21_INVALID_MATRIX);
 
     for (int i = 0; i < A->rows; i++) {
-        for (int j = 0; j < A->rows; j++) {
+        for (int j = 0; j < A->columns; j++) {
             result->matrix[i][j] = A->matrix[i][j] * number;
         }
     }
