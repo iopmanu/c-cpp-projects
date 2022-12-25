@@ -1,6 +1,6 @@
 #include "stack.h"
 
-enum STACK_CODES stack_ctor(stack_t *stk, enum DATA_INFO _elements_type) {
+enum STACK_CODES stack_ctor(stk_t *stk, enum DATA_INFO _elements_type) {
     stk->top = NULL;
     stk->elements_type = _elements_type;
     stk->elements_quantity = 0;
@@ -25,7 +25,7 @@ enum STACK_CODES create_node(enum DATA_INFO elements_type, value_type _real_data
     return SUCCESS;
 }
 
-enum STACK_CODES push(stack_t *stk, value_type _real_data, another_type _symbol_data) {
+enum STACK_CODES push(stk_t *stk, value_type _real_data, another_type _symbol_data) {
     CHECK_BAD_PTR(stk, NULL_POINTER);
     enum STACK_CODES code = SUCCESS;
 
@@ -41,7 +41,7 @@ enum STACK_CODES push(stack_t *stk, value_type _real_data, another_type _symbol_
     return SUCCESS;
 }
 
-value_type pop_number_data(stack_t *stk) {
+value_type pop_number_data(stk_t *stk) {
     CHECK_BAD_PTR(stk, NULL_POINTER);
 
     value_type _data = stk->top->data;
@@ -54,7 +54,7 @@ value_type pop_number_data(stack_t *stk) {
     return _data;
 }
 
-another_type pop_symbol_data(stack_t *stk) {
+another_type pop_symbol_data(stk_t *stk) {
     CHECK_BAD_PTR(stk, NULL_POINTER);
 
     another_type _data = stk->top->symbol_data;
@@ -67,7 +67,7 @@ another_type pop_symbol_data(stack_t *stk) {
     return _data;
 }
 
-enum STACK_CODES stack_dtor(stack_t *stk) {
+enum STACK_CODES stack_dtor(stk_t *stk) {
     CHECK_BAD_PTR(stk, NULL_POINTER);
     CHECK_BAD_PTR(stk->top, NULL_POINTER);
 

@@ -1,9 +1,8 @@
 #ifndef HELPER_PARSER_H_
 #define HELPER_PARSER_H_
 
-#include <string.h>
-
 #include "stack.h"
+#include <string.h>
 
 enum FUNCTION_CODE {
     SIN = 's',
@@ -17,36 +16,15 @@ enum FUNCTION_CODE {
     LN = 'L',
 };
 
-int get_length_mantissa(const char *str, int num_length);
+typedef struct token {
+    double number;
+    char operator;
+    int8_t is_number;
+} token_t;
 
-int get_length_integer_part(const char *str, int num_length);
+void writing_operator(token_t *current_source, char operator, int * current, int shift);
 
-enum FUNCTION_CODE get_function_code(const char *str);
+int8_t check_function(const char *string, const char *function, int *shift);
 
-int8_t compare_two_operators_priority(char first, char second);
-
-int8_t get_arithmetic_operators_priority(char operator);
-
-int8_t is_binary_operator(char symbol);
-
-int8_t is_unary_operator(char **symbol, char first);
-
-int8_t expression_contains_function(const char *str);
-
-int8_t stack_contains_brackets(stack_t stk);
-
-int8_t is_function_code(char symbol);
-
-int8_t is_function(const char *str, const char *functions, int8_t symbols_quantity);
-
-int8_t is_close_bracket(char symbol);
-
-int8_t is_open_bracket(char symbol);
-
-int8_t is_number(char symbol);
-
-int8_t is_mod(char *function);
-
-int8_t is_dot(char symbol);
-
+int8_t string_to_double(const char *string, double *number, int *current);
 #endif  // HELPER_PARSER_H_

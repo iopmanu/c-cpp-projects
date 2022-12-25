@@ -1,136 +1,119 @@
 #include "parser.h"
-#include "helper_parser.h"
-#include <string.h>
 
-char *parse_infix(char *str) {
-    stack_t stk;
-    enum STACK_CODES code = stack_ctor(&stk, SYMBOL_DATA);
-    if (code != SUCCESS) return NULL;
-    char *result = calloc(MAX_LENGTH, sizeof(char));
+token_t *input_tokenizer(char *expression, int *length) {
+    token_t *data = calloc(strlen(expression), sizeof(token_t));
 
-    int8_t bracket_proccessing = process_infix(&str, &result, &stk);
-    while (stk.elements_quantity != 0 && !bracket_proccessing) {
-        if (is_open_bracket(stk.top->symbol_data))
-            bracket_proccessing = 1;
-        else {
-            char top_operator = pop_symbol_data(&stk);
-            char operator_string[3];
-            snprintf(operator_string, sizeof(operator_string), " %c", top_operator);
-            strncat(result, operator_string, 4);
+    double number;
+    int bracket_quantity = 0, _check = 0;
+    int current = 0, shift;
+    *length = 0;
+
+    while (!_check && expression[current] != '\0') {
+        number = 0;
+        shift = 0;
+
+        switch (expression[current]) {
+            case ' ':
+                current++;
+                break;
+            case '+':
+            case '*':
+            case '/':
+                writing_operator(&(data[*length]), expression[current], &current, 1);
+                (*length)++;
+                break;
+            case '-':
+                if ((*length == 0) || data[*length - 1].operator== '(') {
+                    data[*length].is_number = true;
+                    data[*length].number = 0;
+                    (*length)++;
+                }
+                writing_operator(&(data[*length]), expression[current], &current, 1);
+                (*length)++;
+                break;
+
+            case '(':
+                writing_operator(&(data[*length]), expression[current], &current, 1);
+                (*length)++;
+                bracket_quantity++;
+                break;
+            case ')':
+                writing_operator(&(data[*length]), expression[current], &current, 1);
+                (*length)++;
+                bracket_quantity--;
+                break;
+
+            case 's':
+                if (check_function(expression + current, "sin", &shift)) {
+                    writing_operator(&(data[*length]), SIN, &current, shift);
+                    (*length)++;
+                } else if (check_function(expression + current, "sqrt", &shift)) {
+                    writing_operator(&(data[*length]), SQRT, &current, shift);
+                    (*length)++;
+                } else {
+                    _check = true;
+                }
+                break;
+            case 'c':
+                if (check_function(expression + current, "cos", &shift)) {
+                    writing_operator(&(data[*length]), COS, &current, shift);
+                    (*length)++;
+                } else {
+                    _check = true;
+                }
+                break;
+            case 't':
+                if (check_function(expression + current, "tan", &shift)) {
+                    writing_operator(&(data[*length]), TAN, &current, shift);
+                    (*length)++;
+                } else {
+                    _check = true;
+                }
+                break;
+            case 'l':
+                if (check_function(expression + current, "ln", &shift)) {
+                    writing_operator(&(data[*length]), LN, &current, shift);
+                    (*length)++;
+                } else if (check_function(expression + current, "log", &shift)) {
+                    writing_operator(&(data[*length]), LOG, &current, shift);
+                    (*length)++;
+                } else {
+                    _check = true;
+                }
+                break;
+            case 'a':
+                if (check_function(expression + current, "asin", &shift)) {
+                    writing_operator(&(data[*length]), LN, &current, shift);
+                    (*length)++;
+                } else if (check_function(expression + current, "atan", &shift)) {
+                    writing_operator(&(data[*length]), ATAN, &current, shift);
+                    (*length)++;
+                } else {
+                    _check = true;
+                }
+                break;
+            case 'x':
+                writing_operator(&(data[*length]), 'x', &current, 1);
+                (*length)++;
+                break;
+            default:
+                if (expression[current] - '0' >= 0 && expression[current] - '0' <= 9) {
+                    if (string_to_double(expression, &number, &current)) {
+                        _check = true;
+                    } else {
+                        data[*length].is_number = true;
+                        data[*length].number = number;
+                        (*length)++;
+                    }
+                } else {
+                    _check = true;
+                }
         }
     }
 
-    if (bracket_proccessing) {
-        free(result);
-        result = NULL;
+    if (bracket_quantity != 0 || _check) {
+        if (data) free(data);
+        data = NULL;
     }
-
-    stack_dtor(&stk);
-    return result;
-}
-
-int8_t process_infix(char **infix, char **result, stack_t *stk) {
-    char first = **infix;
-    int8_t processing_error = 0;
-
-    while (**infix) {
-        int function_length = 0;
-
-        if (!processing_error) {
-            if (is_number(**infix)) {
-                double_processing(infix, result);
-                //} else if (is_unary_operator(infix, first)) {
-                //   printf("HERE");
-            } else if ((function_length = expression_contains_function(*infix)) != 0) {
-                push(stk, POISON_DOUBLE, get_function_code(*infix));
-                *infix += function_length;
-            } else if (is_binary_operator(**infix)) {
-                process_binary_operator(infix, result, stk);
-            } else if (is_open_bracket(**infix)) {
-                push(stk, POISON_DOUBLE, **infix);
-                (*infix)++;
-            } else if (is_close_bracket(**infix)) {
-                process_close_bracket(infix, result, stk, &processing_error);
-            }
-        } else {
-            (*infix)++;
-        }
-    }
-
-    return processing_error;
-}
-
-void process_close_bracket(char **infix, char **result, stack_t *stk, int8_t *error_code) {
-    char top_symbol = '\0';
-
-    if (stack_contains_brackets(*stk)) {
-        while (!is_open_bracket(stk->top->symbol_data) && !(*error_code)) {
-            top_symbol = stk->top->symbol_data;
-
-            if (is_close_bracket(top_symbol)) {
-                *error_code = 1;
-            } else {
-                top_symbol = pop_symbol_data(stk);
-                char operator_string[3];
-                snprintf(operator_string, sizeof(operator_string), " %c", top_symbol);
-
-                strncat(*result, operator_string, 4);
-            }
-        }
-    } else {
-        *error_code = 1;
-    }
-
-    if (!(*error_code) && is_function_code(stk->top->symbol_data)) {
-        top_symbol = stk->top->symbol_data;
-        char function_string[3];
-        snprintf(function_string, sizeof(function_string), " %c", top_symbol);
-
-        strncat(*result, function_string, 4);
-        (*infix)++;
-    }
-}
-
-void process_binary_operator(char **infix, char **result, stack_t *stk) {
-    char operator=(is_mod(*infix)) ? '%' : **infix;
-
-    if (operator== '%') {
-        *infix += 3;
-    } else {
-        (*infix)++;
-    }
-
-    if (stk->elements_quantity == 0) {
-        push(stk, POISON_DOUBLE, operator);
-        return;
-    }
-
-    while (!compare_two_operators_priority(operator, stk->top->symbol_data)) {
-        char operator_top = pop_symbol_data(stk);
-        char operator_string[3];
-        snprintf(operator_string, sizeof(operator_string), " %c", operator_top);
-
-        strncat(*result, operator_string, 4);
-    }
-
-    push(stk, POISON_DOUBLE, operator);
-    char *space = " ";
-
-    strncat(*result, space, 2);
-}
-
-void double_processing(char **infix, char **res) {
-    double number = 0;
-
-    if (sscanf(*infix, "%lf", &number) != 0) {
-        char *string_number = calloc(MAX_FLOAT, sizeof(char));
-        int number_length = get_length_integer_part(*infix, strlen(*infix));
-        int mantissa_length = get_length_mantissa(*infix, number_length);
-
-        snprintf(string_number, 50, "%.*lf", mantissa_length, number);
-        strncat(*res, string_number, strlen(string_number));
-        *infix += number_length;
-
-        free(string_number);
-    }
+    return data;
 }

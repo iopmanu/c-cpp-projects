@@ -1,130 +1,54 @@
 #include "helper_parser.h"
+#include "parser.h"
 
-int get_length_mantissa(const char *str, int num_length) {
-    int dot_position = 0;
+void writing_operator(token_t *current_source, char _operator, int *current, int shift) {
+    current_source->is_number = false;
+    current_source->operator= _operator;
+    current_source->number = POISON_DOUBLE;
 
-    for (int i = 0; i < num_length && dot_position == 0; i++) {
-        if (is_dot(str[i])) dot_position = i + 1;
+    (*current) += shift;
+}
+
+int8_t check_function(const char *string, const char *function, int *shift) {
+    int length = 0, _check = true;
+
+    while (_check && function[length] != '\0') {
+        if (string[length] == '\0')
+            _check = false;
+        else if (function[length] != string[length])
+            _check = false;
+        length++;
     }
 
-    int length = 0;
+    if (_check && string[length] == '(') _check = 0;
+    *shift = length;
 
-    for (int i = dot_position; (dot_position != 0) && (i < num_length) && (is_number(str[i]));
-         i++, length++)
+    return _check;
+}
+
+int8_t string_to_double(const char *string, double *number, int *current) {
+    while (string[*current] - '0' >= 0 && string[*current] - '0' <= 9) {
+        *number = *number * 10 + (string[*current] - '0');
+        (*current)++;
+    }
+
+    int i = 0;
+    double und = 0;
+
+    if (string[*current] == '.') {
+        (*current)++;
+        if (string[*current] - '0' < 0 || string[*current] - '0' > 9) return 1;
+
+        do {
+            und = und * 10 + (string[*current] - '0');
+            (*current)++;
+            i++;
+        } while (string[*current] - '0' >= 0 && string[*current] - '0' <= 9);
+    }
+
+    for (; i > 0; i--, und /= 10)
         ;
+    *number += und;
 
-    return length;
+    return 0;
 }
-
-int get_length_integer_part(const char *str, int num_length) {
-    int length = 0;
-
-    for (int i = 0; (i < num_length) && (is_number(str[i]) || is_dot(str[i])); i++, length++)
-        ;
-
-    return length;
-}
-
-enum FUNCTION_CODE get_function_code(const char *str) {
-    enum FUNCTION_CODE code;
-
-    if (is_function(str, "cos", 3)) {
-        code = COS;
-    } else if (is_function(str, "sin", 3)) {
-        code = SIN;
-    } else if (is_function(str, "tan", 3)) {
-        code = TAN;
-    } else if (is_function(str, "acos", 4)) {
-        code = ACOS;
-    } else if (is_function(str, "asin", 4)) {
-        code = ASIN;
-    } else if (is_function(str, "atan", 4)) {
-        code = ATAN;
-    } else if (is_function(str, "sqrt", 4)) {
-        code = SQRT;
-    } else if (is_function(str, "ln", 2)) {
-        code = LN;
-    } else if (is_function(str, "log", 3)) {
-        code = LOG;
-    }
-
-    return code;
-}
-
-int8_t is_function_code(char symbol) {
-    return (symbol == COS) || (symbol == SIN) || (symbol == ACOS) || (symbol == ASIN) ||
-           (symbol == TAN) || (symbol == ATAN) || (symbol == SQRT) || (symbol == LN) ||
-           (symbol == LOG);
-}
-
-int8_t compare_two_operators_priority(char first, char second) {
-    return get_arithmetic_operators_priority(first) <= get_arithmetic_operators_priority(second);
-}
-
-int8_t get_arithmetic_operators_priority(char operator) {
-    int priority = 0;
-
-    if (operator== '+' || operator== '-') {
-        priority = 1;
-    } else if (operator== '*' || operator== '/' || operator== '%') {
-        priority = 2;
-    } else if (operator== '^') {
-        priority = 3;
-    }
-
-    return priority;
-}
-
-int8_t is_binary_operator(char symbol) {
-    return (symbol == '-') || (symbol == '+') || (symbol == '*') || (symbol == '/');
-}
-
-int8_t is_unary_operator(char **symbol, char first) {
-    return (**symbol == '+' || **symbol == '-') &&
-           (**symbol == first || (!is_number(*(*symbol - 1) && !is_number(*(*symbol - 2)))));
-}
-
-int8_t expression_contains_function(const char *str) {
-    int length = 0;
-
-    if (is_function(str, "cos", 3) || is_function(str, "sin", 3) || is_function(str, "tan", 3) ||
-        is_function(str, "log", 3)) {
-        length = 3;
-    } else if (is_function(str, "ln", 2)) {
-        length = 2;
-    } else if (is_function(str, "acos", 4) || is_function(str, "asin", 4) ||
-               is_function(str, "atan", 4) || is_function(str, "sqrt", 4)) {
-        length = 4;
-    }
-
-    return length;
-}
-
-int8_t stack_contains_brackets(stack_t stk) {
-    int8_t result = 0;
-    node_t *ptr = stk.top;
-
-    do {
-        if (is_open_bracket(ptr->symbol_data)) {
-            result = 1;
-        }
-
-        ptr = ptr->next;
-    } while (ptr->next != NULL && !result);
-
-    return result;
-}
-
-int8_t is_function(const char *str, const char *functions, int8_t symbols_quantity) {
-    return !strncmp(str, functions, symbols_quantity);
-}
-
-int8_t is_close_bracket(char symbol) { return symbol == ')'; }
-
-int8_t is_open_bracket(char symbol) { return symbol == '('; }
-
-int8_t is_number(char symbol) { return (symbol >= '0') && (symbol <= '9'); }
-
-int8_t is_mod(char *function) { return !strncmp(function, "mod", 3); }
-
-int8_t is_dot(char symbol) { return symbol == '.'; }
