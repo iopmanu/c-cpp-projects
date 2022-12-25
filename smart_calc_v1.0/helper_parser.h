@@ -21,4 +21,8 @@ void writing_operator(token_t *current_source, char operator, int * current, int
 int8_t check_function(const char *string, const char *function, int *shift);
 
 int8_t string_to_double(const char *string, double *number, int *current);
+
+int8_t operator_priority(token_t *first, token_t *second);
+
+int8_t priority(token_t *data);
 #endif  // HELPER_PARSER_H_

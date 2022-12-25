@@ -1,7 +1,7 @@
 .PHONY: all clean
 
 CC=gcc
-CFLAGS=-Wall -Wextra -pedantic
+CFLAGS=-Wall -Wextra -pedantic -fsanitize=address
 
 SOURCEDIR=./
 BUILDDIR=build

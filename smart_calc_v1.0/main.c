@@ -6,16 +6,13 @@ void print_stack(stk_t *stk);
 int main() {
     char *string = "1 + 2";
     int length = 0;
-    token_t *token = input_tokenizer(string, &length);
-    stk_t my_stk;
-    stack_ctor(&my_stk, SYMBOL_DATA);
-
-    for (int i = 0; i < length; i++) {
-        push(&my_stk, POISON_DOUBLE, &(token[i]));
+    token_t *infix = input_tokenizer(string, &length);
+    if (infix == NULL) {
+        printf("Invalid expression");
+    } else {
+        int postfix_length = 1;
+        token_t *postfix_expression = postfix_converter(infix, length, &postfix_length);
+        printf("%d", postfix_length);
     }
-
-    token_t *node = top_symbol(&my_stk);
-
-    printf("%d, %c, %lf", node->is_number, node->operator, node->number);
     return 0;
 }

@@ -1,6 +1,69 @@
 #include "parser.h"
 
-token_t *postfix_converter(token_t *infix, int infix_length, int *postifx_length) {}
+token_t *postfix_converter(token_t *infix, int infix_length, int *postfix_length) {
+    stk_t token_stk;
+    stack_ctor(&token_stk, SYMBOL_DATA);
+    token_t *postfix_expression = calloc(infix_length, sizeof(token_t));
+    *postfix_length = 0;
+    token_t *copy = NULL;
+    int current = 0;
+
+    while (current < infix_length) {
+        if (infix[current].is_number == true) {
+            postfix_expression[*postfix_length].number = infix[current].number;
+            postfix_expression[*postfix_length].is_number = true;
+
+            (*postfix_length)++;
+            current++;
+        } else if (infix[current].operator== 'x') {
+            postfix_expression[*postfix_length].operator= infix[current].operator;
+            postfix_expression[*postfix_length].is_number = false;
+
+            (*postfix_length)++;
+            current++;
+        } else {
+            if (infix[current].operator== '(') {
+                push(&token_stk, POISON_DOUBLE, &infix[current]);
+                current++;
+            } else if (infix[current].operator== ')') {
+                copy = pop_symbol_data(&token_stk);
+                while (copy->operator!= '(') {
+                    postfix_expression[*postfix_length].operator= copy->operator;
+                    postfix_expression[*postfix_length].is_number = false;
+
+                    (*postfix_length)++;
+                    copy = pop_symbol_data(&token_stk);
+                }
+                current++;
+            } else {
+                copy = top_symbol(&token_stk);
+                if (copy != POISON_PTR) {
+                    if (operator_priority(copy, &infix[current]) >= 0) {
+                        copy = pop_symbol_data(&token_stk);
+                        postfix_expression[*postfix_length].operator= copy->operator;
+                        postfix_expression[*postfix_length].is_number = false;
+
+                        (*postfix_length)++;
+                    } else {
+                        push(&token_stk, POISON_DOUBLE, &infix[current]);
+                        current++;
+                    }
+                }
+            }
+        }
+    }
+
+    while (token_stk.elements_quantity != 0) {
+        copy = pop_symbol_data(&token_stk);
+        postfix_expression[*postfix_length].operator= copy->operator;
+        postfix_expression[*postfix_length].is_number = false;
+
+        (*postfix_length)++;
+    }
+
+    stack_dtor(&token_stk);
+    return postfix_expression;
+}
 
 token_t *input_tokenizer(char *expression, int *length) {
     token_t *data = calloc(strlen(expression), sizeof(token_t));

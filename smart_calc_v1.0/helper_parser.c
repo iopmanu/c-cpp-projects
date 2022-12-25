@@ -52,3 +52,38 @@ int8_t string_to_double(const char *string, double *number, int *current) {
 
     return 0;
 }
+
+int8_t operator_priority(token_t *first, token_t *second) {
+    return (priority(first) - priority(second));
+}
+
+int8_t priority(token_t *data) {
+    int result;
+    switch (data->operator) {
+        case '(':
+        case ')':
+            result = 0;
+            break;
+        case '+':
+        case '-':
+            result = 2;
+            break;
+        case '*':
+        case '/':
+            result = 3;
+            break;
+        case SIN:
+        case COS:
+        case TAN:
+        case ASIN:
+        case ACOS:
+        case ATAN:
+        case SQRT:
+        case LOG:
+        case LN:
+            result = 4;
+            break;
+    }
+
+    return result;
+}
