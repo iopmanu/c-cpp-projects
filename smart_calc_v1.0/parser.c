@@ -3,7 +3,7 @@
 token_t *postfix_converter(token_t *infix, int infix_length, int *postfix_length) {
     stk_t token_stk;
     stack_ctor(&token_stk, SYMBOL_DATA);
-    token_t *postfix_expression = calloc(infix_length, sizeof(token_t));
+    token_t *postfix_expression = calloc(infix_length + 5, sizeof(token_t));
     *postfix_length = 0;
     token_t *copy = NULL;
     int current = 0;
@@ -37,17 +37,15 @@ token_t *postfix_converter(token_t *infix, int infix_length, int *postfix_length
                 current++;
             } else {
                 copy = top_symbol(&token_stk);
-                if (copy != POISON_PTR) {
-                    if (operator_priority(copy, &infix[current]) >= 0) {
-                        copy = pop_symbol_data(&token_stk);
-                        postfix_expression[*postfix_length].operator= copy->operator;
-                        postfix_expression[*postfix_length].is_number = false;
+                if (copy != POISON_PTR && operator_priority(copy, &infix[current]) >= 0) {
+                    copy = pop_symbol_data(&token_stk);
+                    postfix_expression[*postfix_length].operator= copy->operator;
+                    postfix_expression[*postfix_length].is_number = false;
 
-                        (*postfix_length)++;
-                    } else {
-                        push(&token_stk, POISON_DOUBLE, &infix[current]);
-                        current++;
-                    }
+                    (*postfix_length)++;
+                } else {
+                    push(&token_stk, POISON_DOUBLE, &infix[current]);
+                    current++;
                 }
             }
         }

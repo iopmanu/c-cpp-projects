@@ -56,6 +56,7 @@ value_type pop_number_data(stk_t *stk) {
 
 another_type *top_symbol(stk_t *stk) {
     CHECK_BAD_PTR(stk, POISON_PTR);
+    CHECK_BAD_PTR(stk->top, POISON_PTR);
 
     another_type *_data = stk->top->symbol_data;
     return _data;

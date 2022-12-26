@@ -11,7 +11,7 @@
  * @brief This structure is for better processing of the infix expression parsing
  *        and postfix expression handling. Contains flag - is number to check that
  *        current data is a real number or an operator(mathematical function).
- * 
+ *
  */
 typedef struct token {
     double number;
@@ -24,25 +24,25 @@ typedef struct token {
 
 /**
  * @brief This enum is to check a data type in the stack, or make it uninitialized.
- * 
+ *
  */
 enum DATA_INFO { UNINITIALIZED, REAL_NUMBER_DATA, SYMBOL_DATA };
 
 /**
  * @brief Non-valid parametrs for the stack possible data types.
- * 
+ *
  */
 enum POISON_VALUES { POISON_CHAR = 1, POISON_DOUBLE = -228228666 };
 
 /**
  * @brief Non valid parametr of pointer for tokens.
- * 
+ *
  */
 #define POISON_PTR (token_t *)0xAB0BA
 
 /**
  * @brief Stack error-codes, to check all possible errors occured with stack operations.
- * 
+ *
  */
 enum STACK_CODES { SUCCESS, NULL_POINTER, ALLOCATION_ERROR, INITIALIZATION_ERROR };
 
@@ -60,7 +60,7 @@ typedef struct stack_s {
 
 /**
  * @brief This function is for stack creation and initialization of stack data type.
- * 
+ *
  * @param stk - created stack
  * @param _elements_type - can be a token or a real number
  * @return enum STACK_CODES - to check succes of the operation
@@ -69,7 +69,7 @@ enum STACK_CODES stack_ctor(stk_t *stk, enum DATA_INFO _elements_type);
 
 /**
  * @brief This function create a node element with given elements info.
- * 
+ *
  * @param elements_type - elements info
  * @param _real_data - possible type(real number)
  * @param _symbol_data - possible type(token)
@@ -81,7 +81,7 @@ enum STACK_CODES create_node(enum DATA_INFO elements_type, value_type _real_data
 
 /**
  * @brief This function creates node using functing above and push it into stack top.
- * 
+ *
  * @param stk - source
  * @param _real_data - possible type(real number)
  * @param _symbol_data - possible type(token)
@@ -91,7 +91,7 @@ enum STACK_CODES push(stk_t *stk, value_type _real_data, another_type *_symbol_d
 
 /**
  * @brief This function removes a node from the top of the stack.
- * 
+ *
  * @param stk - source
  * @return value_type - removed value
  */
@@ -99,25 +99,25 @@ value_type pop_number_data(stk_t *stk);
 
 /**
  * @brief This function removes a node from the top of the stack.
- * 
+ *
  * @param stk - source
- * @return another_type* - removed token 
+ * @return another_type* - removed token
  */
 another_type *pop_symbol_data(stk_t *stk);
 
 /**
  * @brief This function get a top of the stack.
- * 
- * @param stk 
+ *
+ * @param stk
  * @return another_type* - token on the top
  */
 another_type *top_symbol(stk_t *stk);
 
 /**
  * @brief This function destroys a stack.
- * 
+ *
  * @param stk - source
- * @return enum STACK_CODES 
+ * @return enum STACK_CODES
  */
 enum STACK_CODES stack_dtor(stk_t *stk);
 

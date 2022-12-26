@@ -20,7 +20,7 @@ int8_t check_function(const char *string, const char *function, int *shift) {
         length++;
     }
 
-    if (_check && string[length] == '(') _check = 0;
+    if (_check && string[length] != '(') _check = 0;
     *shift = length;
 
     return _check;

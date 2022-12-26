@@ -8,7 +8,7 @@
 
 /**
  * @brief This macro is for condition checking and return code of the error.
- * 
+ *
  */
 #define CHECK(condition, code) \
     do {                       \
@@ -19,7 +19,7 @@
 
 /**
  * @brief This function is for nullptr checking and return code of the error/poison ptr.
- * 
+ *
  */
 #define CHECK_BAD_PTR(ptr, code) \
     do {                         \
