@@ -1,5 +1,6 @@
 CC=gcc
-CFLAGS= -Wall -Wextra -pedantic -g
+CFLAGS= -Wall -Wextra -pedantic -g -lm
+LFLAGS ?= $(shell pkg-config --cflags --libs check)
 
 SRC_DIR= .
 TEST_DIR=tests
@@ -11,10 +12,10 @@ OBJS := $(SRC:%.c=$(BUILD_DIR)/%.o)
 TEST=main.c
 TEST_OBJS=$(BUILD_DIR)/main.o
 
-s21_smart_calc: s21_smart_calc.a test
+s21_smart_calc: clean s21_smart_calc.a test
 
 test: s21_smart_calc.a $(TEST_OBJS)
-	$(CC) $(LFLAGS) $(TEST_OBJS) s21_smart_calc.a -o smart_calc.out
+	$(CC) $(CFLAGS) $(LFLAGS) $(TEST_OBJS) s21_smart_calc.a -o smart_calc.out
 
 s21_smart_calc.a: $(OBJS)
 	@mkdir -p $(BUILD_DIR)
@@ -23,10 +24,10 @@ s21_smart_calc.a: $(OBJS)
 
 $(BUILD_DIR)/%.o: %.c
 	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) $(LFLAGS) -c $< -o $@
 
 $(BUILD_DIR)/main.o: main.c
-	$(CC) $(CLFAGS) -c main.c -o $(BUILD_DIR)/main.o
+	$(CC) $(CLFAGS) $(LFLAGS) -c main.c -o $(BUILD_DIR)/main.o
 
 clean: 
 	rm -f *.gcda *.gcov *.o *.gcno

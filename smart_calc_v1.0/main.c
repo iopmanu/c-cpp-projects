@@ -1,4 +1,5 @@
 #include "../smart_calc_v1.0/parser/s21_parser.h"
+#include "./s21_calculation/s21_calculation.h"
 #include <stdio.h>
 
 void print_stack(stk_t *stk);
@@ -12,11 +13,9 @@ int main() {
     } else {
         int postfix_length = 1;
         token_t *postfix_expression = postfix_converter(infix, length, &postfix_length);
-        printf("%d\n", postfix_length);
-        for (int i = 0; i < postfix_length; i++) {
-            printf("%lf %c\n", postfix_expression[i].number, postfix_expression[i].operator);
-        }
-
+        double answer = 0;
+        calculate(postfix_expression, postfix_length, PI, &answer);
+        printf("%lf", answer);
         free(postfix_expression);
         free(infix);
     }
