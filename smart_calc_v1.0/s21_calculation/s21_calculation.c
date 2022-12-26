@@ -16,7 +16,9 @@ int8_t calculate(token_t *postfix, int length, double x, double *answer) {
                     break;
                 case '+':
                     if (valid_calculations_stack(double_stk)) {
-                        push(&double_stk, pop_number_data(&double_stk) + pop_number_data(&double_stk), POISON_PTR);
+                        push(&double_stk,
+                             pop_number_data(&double_stk) + pop_number_data(&double_stk),
+                             POISON_PTR);
                     } else {
                         check = true;
                     }
@@ -31,13 +33,16 @@ int8_t calculate(token_t *postfix, int length, double x, double *answer) {
                     break;
                 case '*':
                     if (valid_calculations_stack(double_stk)) {
-                        push(&double_stk, pop_number_data(&double_stk) * pop_number_data(&double_stk), POISON_PTR);
+                        push(&double_stk,
+                             pop_number_data(&double_stk) * pop_number_data(&double_stk),
+                             POISON_PTR);
                     } else {
                         check = true;
                     }
                     break;
                 case '/':
-                    if (valid_calculations_stack(double_stk) && (fabs(second = pop_number_data(&double_stk) >= EPS))) {
+                    if (valid_calculations_stack(double_stk) &&
+                        (fabs(second = pop_number_data(&double_stk) >= EPS))) {
                         push(&double_stk, pop_number_data(&double_stk) / second, POISON_PTR);
                     } else {
                         check = true;
@@ -62,6 +67,4 @@ int8_t calculate(token_t *postfix, int length, double x, double *answer) {
     }
 }
 
-int8_t valid_calculations_stack(stk_t stk) {
-    return (stk.top != NULL && stk.top->next != NULL);
-}
+int8_t valid_calculations_stack(stk_t stk) { return (stk.top != NULL && stk.top->next != NULL); }

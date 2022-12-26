@@ -33,3 +33,6 @@ clean:
 	rm -f s21_smart_calc.a
 	rm -rf $(BUILD_DIR)
 	rm -rf smart_calc.out
+
+codestyle:
+	clang-format -i $(SRC)
