@@ -24,10 +24,10 @@ s21_smart_calc.a: $(OBJS)
 
 $(BUILD_DIR)/%.o: %.c
 	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) $(LFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@ $(LFLAGS)
 
 $(BUILD_DIR)/main.o: main.c
-	$(CC) $(CLFAGS) $(LFLAGS) -c main.c -o $(BUILD_DIR)/main.o
+	$(CC) $(CLFAGS) -c main.c -o $(BUILD_DIR)/main.o
 
 clean: 
 	rm -f *.gcda *.gcov *.o *.gcno

@@ -67,7 +67,7 @@ int8_t calculate(token_t *postfix, int length, double x, double *answer) {
                 case TAN:
                     first = pop_number_data(&double_stk);
                     if (double_stk.top != NULL && fabs(cos(first)) >= 0) {
-                            push(&double_stk, tan(first), POISON_PTR);
+                        push(&double_stk, tan(first), POISON_PTR);
                     } else {
                         check = true;
                     }
