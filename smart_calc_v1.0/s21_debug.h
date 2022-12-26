@@ -3,7 +3,7 @@
 
 #define NDEBUG
 
-#include "stack.h"
+#include "../smart_calc_v1.0/data_structure/s21_stack.h"
 #include <assert.h>
 
 /**

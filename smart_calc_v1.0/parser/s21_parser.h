@@ -4,8 +4,8 @@
 #include <stdbool.h>
 #include <string.h>
 
-#include "helper_parser.h"
-#include "stack.h"
+#include "s21_helper_parser.h"
+#include "../data_structure/s21_stack.h"
 
 /**
  * @brief This function is for converting infix expression parsed into tokens array

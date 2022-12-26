@@ -1,4 +1,4 @@
-#include "stack.h"
+#include "s21_stack.h"
 
 enum STACK_CODES stack_ctor(stk_t *stk, enum DATA_INFO _elements_type) {
     stk->top = NULL;

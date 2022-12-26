@@ -1,10 +1,10 @@
-#include "parser.h"
+#include "../smart_calc_v1.0/parser/s21_parser.h"
 #include <stdio.h>
 
 void print_stack(stk_t *stk);
 
 int main() {
-    char *string = "sin(x)";
+    char *string = "atan(sin(x))";
     int length = 0;
     token_t *infix = input_tokenizer(string, &length);
     if (infix == NULL) {

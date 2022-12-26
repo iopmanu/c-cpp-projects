@@ -1,7 +1,7 @@
 #ifndef HELPER_PARSER_H_
 #define HELPER_PARSER_H_
 
-#include "stack.h"
+#include "../data_structure/s21_stack.h"
 #include <string.h>
 
 /**

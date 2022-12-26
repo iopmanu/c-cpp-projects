@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "debug.h"
+#include "../s21_debug.h"
 
 /**
  * @brief This structure is for better processing of the infix expression parsing

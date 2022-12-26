@@ -1,4 +1,4 @@
-#include "parser.h"
+#include "s21_parser.h"
 
 token_t *postfix_converter(token_t *infix, int infix_length, int *postfix_length) {
     stk_t token_stk;

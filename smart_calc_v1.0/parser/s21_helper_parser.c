@@ -1,5 +1,5 @@
-#include "helper_parser.h"
-#include "parser.h"
+#include "s21_helper_parser.h"
+#include "s21_parser.h"
 
 void writing_operator(token_t *current_source, char _operator, int *current, int shift) {
     current_source->is_number = false;
