@@ -107,7 +107,7 @@ void function_calculation(char function, stk_t *double_stk, int8_t *check) {
             break;
         case TAN:
             first = pop_number_data(double_stk);
-            if (double_stk->top != NULL && fabs(cos(first)) >= 0) {
+            if (fabs(cos(first)) >= EPS) {
                 push(double_stk, tan(first), POISON_PTR);
             } else {
                 (*check) = true;
