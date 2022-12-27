@@ -61,7 +61,7 @@ void arithmetic_processing(char operator, stk_t * double_stk, int8_t *check, dou
             break;
         case '/':
             if (valid_calculations_stack(*double_stk) &&
-                (fabs(second = pop_number_data(double_stk) >= EPS))) {
+                (fabs((second = pop_number_data(double_stk)) >= EPS))) {
                 push(double_stk, pop_number_data(double_stk) / second, POISON_PTR);
             } else {
                 (*check) = true;
@@ -119,7 +119,7 @@ void function_calculation(char function, stk_t *double_stk, int8_t *check) {
             break;
         case SQRT:
             first = pop_number_data(double_stk);
-            if (double_stk->top != NULL && first >= 0) {
+            if (first >= 0) {
                 push(double_stk, sqrt(first), POISON_PTR);
             } else {
                 (*check) = true;
@@ -127,14 +127,15 @@ void function_calculation(char function, stk_t *double_stk, int8_t *check) {
             break;
         case LOG:
             first = pop_number_data(double_stk);
-            if (double_stk->top != NULL && first > EPS) {
+            if (first > EPS) {
                 push(double_stk, log10(first), POISON_PTR);
             } else {
                 (*check) = true;
             }
             break;
         case LN:
-            if (double_stk->top != NULL && first > EPS) {
+            first = pop_number_data(double_stk);
+            if (first > EPS) {
                 push(double_stk, log(first), POISON_PTR);
             } else {
                 (*check) = true;

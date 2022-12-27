@@ -5,7 +5,7 @@
 void print_stack(stk_t *stk);
 
 int main() {
-    char *string = "atan(sin(1 + 5 * 2))";
+    char *string = "ln(sqrt(4)))";
     int length = 0;
     token_t *infix = input_tokenizer(string, &length);
     if (infix == NULL) {

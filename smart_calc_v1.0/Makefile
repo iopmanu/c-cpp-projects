@@ -10,7 +10,7 @@ BUILD_DIR=build
 SRC  := $(shell find $(SRC_DIR) -name "s21*.c" | sed -e 's/\.\///')
 OBJS := $(SRC:%.c=$(BUILD_DIR)/%.o)
 TEST=main.c
-TEST_OBJS=$(BUILD_DIR)/main.o
+TEST_OBJS=$(BUILD_DIR)/tests/s21_tests.o
 
 s21_smart_calc: clean s21_smart_calc.a test
 
