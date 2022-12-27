@@ -70,8 +70,10 @@ int8_t priority(token_t *data) {
             break;
         case '*':
         case '/':
+        case '%':
             result = 3;
             break;
+        case '^':
         case SIN:
         case COS:
         case TAN:

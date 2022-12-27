@@ -82,6 +82,8 @@ token_t *input_tokenizer(char *expression, int *length) {
             case '+':
             case '*':
             case '/':
+            case '^':
+            case '%':
                 writing_operator(&(data[*length]), expression[current], &current, 1);
                 (*length)++;
                 break;

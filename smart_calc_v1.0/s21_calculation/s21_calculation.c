@@ -67,6 +67,23 @@ void arithmetic_processing(char operator, stk_t * double_stk, int8_t *check, dou
                 (*check) = true;
             }
             break;
+        /*case '%':
+            if (valid_calculations_stack(*double_stk) &&
+                (fabs((second = pop_number_data(double_stk)) >= EPS))) {
+                push(double_stk, pop_number_data(double_stk) % second, POISON_PTR);
+            } else {
+                (*check) = true;
+            }
+            break;
+            */
+        case '^':
+            if (valid_calculations_stack(*double_stk)) {
+                second = pop_number_data(double_stk);
+                push(double_stk, powl(pop_number_data(double_stk), second), POISON_PTR);
+            } else {
+                (*check) = true;
+            }
+            break;
     }
 }
 

@@ -99,6 +99,36 @@ START_TEST(stress_test) {
     free(infix);
 }
 
+START_TEST(unary) {
+    char *string = "(-4 + 5) * 2";
+    int length = 0, postfix_length = 0;
+    token_t *infix = input_tokenizer(string, &length);
+    token_t *postfix_expression = postfix_converter(infix, length, &postfix_length);
+    double answer = 0;
+    int status = calculate(postfix_expression, postfix_length, POISON_DOUBLE, &answer);
+    double result = 2;
+    ck_assert_double_eq_tol(result, answer, 1e-3);
+    ck_assert_int_eq(status, false);
+
+    free(postfix_expression);
+    free(infix);
+}
+
+START_TEST(degree) {
+    char *string = "2.5 ^ 2";
+    int length = 0, postfix_length = 0;
+    token_t *infix = input_tokenizer(string, &length);
+    token_t *postfix_expression = postfix_converter(infix, length, &postfix_length);
+    double answer = 0;
+    int status = calculate(postfix_expression, postfix_length, POISON_DOUBLE, &answer);
+    double result = 6.25;
+    ck_assert_double_eq_tol(result, answer, 1e-1);
+    ck_assert_int_eq(status, false);
+
+    free(postfix_expression);
+    free(infix);
+}
+
 int main(void) {
     Suite *s1 = suite_create("Core");
     TCase *tc1_1 = tcase_create("Calculations");
@@ -112,6 +142,8 @@ int main(void) {
     tcase_add_test(tc1_1, simple_arithm);
     tcase_add_test(tc1_1, simple_arithm_2);
     tcase_add_test(tc1_1, stress_test);
+    tcase_add_test(tc1_1, unary);
+    tcase_add_test(tc1_1, degree);
 
     srunner_run_all(sr, CK_ENV);
     int nf = srunner_ntests_failed(sr);
