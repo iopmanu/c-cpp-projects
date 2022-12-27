@@ -84,6 +84,21 @@ START_TEST(simple_arithm_2) {
     free(infix);
 }
 
+START_TEST(stress_test) {
+    char *string = "acos(cos(sin(atan(ln(sqrt((8 * ((1 + 2 + 4 * 3 - 3 * 7) / 4)) + 133))))))";
+    int length = 0, postfix_length = 0;
+    token_t *infix = input_tokenizer(string, &length);
+    token_t *postfix_expression = postfix_converter(infix, length, &postfix_length);
+    double answer = 0;
+    int status = calculate(postfix_expression, postfix_length, POISON_DOUBLE, &answer);
+    double result = 0.922957;
+    ck_assert_double_eq_tol(result, answer, 1e-3);
+    ck_assert_int_eq(status, false);
+
+    free(postfix_expression);
+    free(infix);
+}
+
 int main(void) {
     Suite *s1 = suite_create("Core");
     TCase *tc1_1 = tcase_create("Calculations");
@@ -96,6 +111,7 @@ int main(void) {
     tcase_add_test(tc1_1, sin_sqrt_4);
     tcase_add_test(tc1_1, simple_arithm);
     tcase_add_test(tc1_1, simple_arithm_2);
+    tcase_add_test(tc1_1, stress_test);
 
     srunner_run_all(sr, CK_ENV);
     int nf = srunner_ntests_failed(sr);

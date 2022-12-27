@@ -151,6 +151,9 @@ token_t *input_tokenizer(char *expression, int *length) {
                 } else if (check_function(expression + current, "atan", &shift)) {
                     writing_operator(&(data[*length]), ATAN, &current, shift);
                     (*length)++;
+                } else if (check_function(expression + current, "acos", &shift)) {
+                    writing_operator(&(data[*length]), ACOS, &current, shift);
+                    (*length)++;
                 } else {
                     _check = true;
                 }
