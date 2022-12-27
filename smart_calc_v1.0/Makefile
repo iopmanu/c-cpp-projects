@@ -15,7 +15,7 @@ TEST_OBJS=$(BUILD_DIR)/main.o
 s21_smart_calc: clean s21_smart_calc.a test
 
 test: s21_smart_calc.a $(TEST_OBJS)
-	$(CC) $(CFLAGS) $(LFLAGS) $(TEST_OBJS) s21_smart_calc.a -o smart_calc.out
+	$(CC) $(CFLAGS) $(TEST_OBJS) s21_smart_calc.a $(LFLAGS) -o smart_calc.out
 
 s21_smart_calc.a: $(OBJS)
 	@mkdir -p $(BUILD_DIR)
