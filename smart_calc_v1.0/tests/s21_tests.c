@@ -143,6 +143,20 @@ START_TEST(degree_tan) {
     free(infix);
 }
 
+START_TEST(mod) {
+    char *string = "6.25 % 3";
+    int length = 0, postfix_length = 0;
+    token_t *infix = input_tokenizer(string, &length);
+    token_t *postfix_expression = postfix_converter(infix, length, &postfix_length);
+    double answer = 0;
+    int status = calculate(postfix_expression, postfix_length, PI / 2, &answer);
+    double result = 0.25;
+    ck_assert_double_eq_tol(result, answer, 1e-1);
+    ck_assert_int_eq(status, false);
+    free(postfix_expression);
+    free(infix);
+}
+
 int main(void) {
     Suite *s1 = suite_create("Core");
     TCase *tc1_1 = tcase_create("Calculations");
@@ -159,6 +173,7 @@ int main(void) {
     tcase_add_test(tc1_1, unary);
     tcase_add_test(tc1_1, degree);
     tcase_add_test(tc1_1, degree_tan);
+    tcase_add_test(tc1_1, mod);
 
     srunner_run_all(sr, CK_ENV);
     int nf = srunner_ntests_failed(sr);
