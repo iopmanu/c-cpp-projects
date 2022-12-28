@@ -7,24 +7,17 @@ SRC_DIR= .
 TEST_DIR=tests
 INCLUDE_DIR := $(shell find $(SRC_DIR) -type d)
 BUILD_DIR=build
+GCOV_DIR=gcov_report
 
 SRC  := $(shell find $(SRC_DIR) -name "s21*.c" | sed -e 's/\.\///')
 OBJS := $(SRC:%.c=$(BUILD_DIR)/%.o)
-TEST=main.c
+TEST=
 TEST_OBJS=$(BUILD_DIR)/tests/s21_tests.o
 
 all: clean s21_smart_calc.a tests
 
-tests: s21_test.out
-
-s21_test.out: s21_smart_calc.a $(TEST_OBJS)
-	$(CC) $(CFLAGS) $(COVERAGE_FLAGS) $(TEST_OBJS) s21_smart_calc.a $(LFLAGS) -o s21_test.out
-
-gcov_report: s21_test.out
-	./s21_test.out
-	lcov -t "s21_test.out" -c -d . -o gcovreport.info
-	genhtml gcovreport.info -o report
-	open -a report/index.html
+tests: s21_smart_calc.a $(TEST_OBJS)
+	$(CC) $(CFLAGS) $(TEST_OBJS) s21_smart_calc.a $(LFLAGS) -o s21_test.out
 
 s21_smart_calc.a: $(OBJS)
 	@mkdir -p $(BUILD_DIR)
@@ -38,10 +31,17 @@ $(BUILD_DIR)/%.o: %.c
 $(BUILD_DIR)/main.o: main.c
 	$(CC) $(CLFAGS) -c main.c -o $(BUILD_DIR)/main.o
 
+gcov_report: clean
+	$(CC) $(CFLAGS) $(COVERAGE_FLAGS) $(SRC) $(LFLAGS) -o gcov.out
+	./gcov.out
+	lcov --capture --directory . --output-file coverage.info
+	genhtml coverage.info --output-directory gcov_report
+	open $(GCOV_DIR)/index.html
+	rm -Rf *.gcda *.cov *.gcno *.info
 clean: 
 	rm -f *.gcda *.gcov *.o *.gcno
 	rm -f s21_smart_calc.a
-	rm -rf $(BUILD_DIR)
+	rm -rf $(BUILD_DIR) $(GCOV_DIR)
 	rm -rf *out *info
 
 codestyle:
