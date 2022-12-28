@@ -11,6 +11,7 @@ int8_t calculate(token_t *postfix, int length, double x, double *answer) {
         if (postfix[i].is_number) {
             push(&double_stk, postfix[i].number, POISON_PTR);
         } else {
+            printf("%c\n\n", postfix[i].operator);
             function_calculation(postfix[i].operator, & double_stk, &check);
             arithmetic_processing(postfix[i].operator, & double_stk, &check, x);
         }
@@ -116,6 +117,7 @@ void function_calculation(char function, stk_t *double_stk, int8_t *check) {
         case ASIN:
             if (double_stk->top != NULL) {
                 push(double_stk, asin(pop_number_data(double_stk)), POISON_PTR);
+                printf("Herer\n\n\n");
             } else {
                 (*check) = true;
             }

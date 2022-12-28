@@ -148,7 +148,7 @@ token_t *input_tokenizer(char *expression, int *length) {
                 break;
             case 'a':
                 if (check_function(expression + current, "asin", &shift)) {
-                    writing_operator(&(data[*length]), LN, &current, shift);
+                    writing_operator(&(data[*length]), ASIN, &current, shift);
                     (*length)++;
                 } else if (check_function(expression + current, "atan", &shift)) {
                     writing_operator(&(data[*length]), ATAN, &current, shift);
