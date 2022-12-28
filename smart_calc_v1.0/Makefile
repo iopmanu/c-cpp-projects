@@ -8,6 +8,7 @@ TEST_DIR=tests
 INCLUDE_DIR := $(shell find $(SRC_DIR) -type d)
 BUILD_DIR=build
 GCOV_DIR=gcov_report
+DOC_DIR=html
 
 SRC  := $(shell find $(SRC_DIR) -name "s21*.c" | sed -e 's/\.\///')
 OBJS := $(SRC:%.c=$(BUILD_DIR)/%.o)
@@ -38,11 +39,17 @@ gcov_report: clean
 	genhtml coverage.info --output-directory gcov_report
 	open $(GCOV_DIR)/index.html
 	rm -Rf *.gcda *.cov *.gcno *.info
+
+dvi:
+	doxygen Doxyfile
+	open html/index.html
+
 clean: 
 	rm -f *.gcda *.gcov *.o *.gcno
 	rm -f s21_smart_calc.a
 	rm -rf $(BUILD_DIR) $(GCOV_DIR)
 	rm -rf *out *info
+	rm -rf $(DOC_DIR)
 
 codestyle:
 	clang-format -i $(SRC)
