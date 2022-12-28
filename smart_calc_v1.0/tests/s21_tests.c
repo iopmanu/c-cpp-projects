@@ -157,6 +157,20 @@ START_TEST(mod) {
     free(infix);
 }
 
+START_TEST(brackets) {
+    char *string = "()";
+    int length = 0, postfix_length = 0;
+    token_t *infix = input_tokenizer(string, &length);
+    double answer = 0;
+    token_t *postfix_expression = postfix_converter(infix, length, &postfix_length);
+    int status = calculate(postfix_expression, postfix_length, PI / 2, &answer);
+    // Calculation error
+    ck_assert_int_eq(status, 1);
+
+    free(postfix_expression);
+    free(infix);
+}
+
 int main(void) {
     Suite *s1 = suite_create("Core");
     TCase *tc1_1 = tcase_create("Calculations");
@@ -174,6 +188,7 @@ int main(void) {
     tcase_add_test(tc1_1, degree);
     tcase_add_test(tc1_1, degree_tan);
     tcase_add_test(tc1_1, mod);
+    tcase_add_test(tc1_1, brackets);
 
     srunner_run_all(sr, CK_ENV);
     int nf = srunner_ntests_failed(sr);

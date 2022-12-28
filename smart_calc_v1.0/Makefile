@@ -1,6 +1,7 @@
-CC=gcc
-CFLAGS= -Wall -Wextra -pedantic -g -lm
+CC = gcc
+CFLAGS = -Wall -Wextra -pedantic -g -lm
 LFLAGS ?= $(shell pkg-config --cflags --libs check)
+COVERAGE_FLAGS = -fprofile-arcs -ftest-coverage
 
 SRC_DIR= .
 TEST_DIR=tests
@@ -12,10 +13,18 @@ OBJS := $(SRC:%.c=$(BUILD_DIR)/%.o)
 TEST=main.c
 TEST_OBJS=$(BUILD_DIR)/tests/s21_tests.o
 
-s21_smart_calc: clean s21_smart_calc.a test
+all: clean s21_smart_calc.a tests
 
-test: s21_smart_calc.a $(TEST_OBJS)
-	$(CC) $(CFLAGS) $(TEST_OBJS) s21_smart_calc.a $(LFLAGS) -o smart_calc.out
+tests: s21_test.out
+
+s21_test.out: s21_smart_calc.a $(TEST_OBJS)
+	$(CC) $(CFLAGS) $(COVERAGE_FLAGS) $(TEST_OBJS) s21_smart_calc.a $(LFLAGS) -o s21_test.out
+
+gcov_report: s21_test.out
+	./s21_test.out
+	lcov -t "s21_test.out" -c -d . -o gcovreport.info
+	genhtml gcovreport.info -o report
+	open -a report/index.html
 
 s21_smart_calc.a: $(OBJS)
 	@mkdir -p $(BUILD_DIR)
@@ -33,7 +42,7 @@ clean:
 	rm -f *.gcda *.gcov *.o *.gcno
 	rm -f s21_smart_calc.a
 	rm -rf $(BUILD_DIR)
-	rm -rf smart_calc.out
+	rm -rf *out *info
 
 codestyle:
 	clang-format -i $(SRC)
