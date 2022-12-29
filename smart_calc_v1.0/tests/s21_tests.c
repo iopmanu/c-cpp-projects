@@ -144,7 +144,7 @@ START_TEST(degree_tan) {
 }
 
 START_TEST(mod) {
-    char *string = "6.25 % 3";
+    char *string = "6.25 mod 3";
     int length = 0, postfix_length = 0;
     token_t *infix = input_tokenizer(string, &length);
     token_t *postfix_expression = postfix_converter(infix, length, &postfix_length);

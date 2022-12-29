@@ -46,6 +46,11 @@ endif
 	@echo " Done."
 	@echo "Installation complete!"
 
+uninstall:
+	@echo -n "Uninstalling application..."
+	@rm -rf $(QT_APP_FOLDER)
+	@echo " Done."
+
 tests: s21_smart_calc.a $(TEST_OBJS)
 	$(CC) $(CFLAGS) $(TEST_OBJS) s21_smart_calc.a $(LFLAGS) -o s21_test.out
 

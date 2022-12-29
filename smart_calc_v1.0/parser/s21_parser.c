@@ -89,10 +89,6 @@ token_t *input_tokenizer(char *expression, int *length) {
             case '*':
             case '/':
             case '^':
-            case 'm':
-                writing_operator(&(data[*length]), '%', &current, 3);
-                (*length)++;
-                break;
             case '-':
                 if ((*length == 0) || data[*length - 1].oper == '(') {
                     data[*length].is_number = true;
@@ -102,7 +98,10 @@ token_t *input_tokenizer(char *expression, int *length) {
                 writing_operator(&(data[*length]), expression[current], &current, 1);
                 (*length)++;
                 break;
-
+            case 'm':
+                writing_operator(&(data[*length]), '%', &current, 3);
+                (*length)++;
+                break;
             case '(':
                 writing_operator(&(data[*length]), expression[current], &current, 1);
                 (*length)++;

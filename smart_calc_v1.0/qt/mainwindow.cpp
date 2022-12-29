@@ -30,7 +30,6 @@ MainWindow::MainWindow(QWidget *parent)
       connect(ui->pushButton_mod, SIGNAL(clicked()), this, SLOT(signal_processing()));
       connect(ui->pushButton_cos, SIGNAL(clicked()), this, SLOT(signal_processing()));
       connect(ui->pushButton_sin, SIGNAL(clicked()), this, SLOT(signal_processing()));
-      connect(ui->pushButton_cos, SIGNAL(clicked()), this, SLOT(signal_processing()));
       connect(ui->pushButton_tan, SIGNAL(clicked()), this, SLOT(signal_processing()));
       connect(ui->pushButton_asin, SIGNAL(clicked()), this, SLOT(signal_processing()));
       connect(ui->pushButton_acos, SIGNAL(clicked()), this, SLOT(signal_processing()));
