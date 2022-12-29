@@ -50,6 +50,16 @@ void function_calculation(char function, stk_t *double_stk, int8_t *check);
  * @param check - checking errors occured with calculations
  * @param x - if there is x value in the token we push it into stack
  */
-void arithmetic_processing(char operator, stk_t *double_stk, int8_t *check, double x);
+void arithmetic_processing(char oper, stk_t *double_stk, int8_t *check, double x);
+
+/**
+ * @brief This function is a composition of parser and calculations for inputed expression with error checks.
+ * 
+ * @param infix_expression - inputed infix expression
+ * @param x - variable
+ * @param answer - answer
+ * @return int8_t 
+ */
+int8_t main_calculations(char *infix_expression, double x, double *answer);
 
 #endif // SRC_CALCULATION_H_

@@ -15,11 +15,11 @@
  */
 typedef struct token {
     double number;
-    char operator;
+    char oper;
     int8_t is_number;
 } token_t;
 
-#define value_type double
+#define _value_type double
 #define another_type token_t
 
 /**
@@ -47,7 +47,7 @@ enum POISON_VALUES { POISON_CHAR = 1, POISON_DOUBLE = -228228666 };
 enum STACK_CODES { SUCCESS, NULL_POINTER, ALLOCATION_ERROR, INITIALIZATION_ERROR };
 
 typedef struct node_s {
-    value_type data;
+    _value_type data;
     another_type *symbol_data;
     struct node_s *next;
 } node_t;
@@ -76,7 +76,7 @@ enum STACK_CODES stack_ctor(stk_t *stk, enum DATA_INFO _elements_type);
  * @param source - result of creation
  * @return enum STACK_CODES to check succes of the operation
  */
-enum STACK_CODES create_node(enum DATA_INFO elements_type, value_type _real_data,
+enum STACK_CODES create_node(enum DATA_INFO elements_type, _value_type _real_data,
                              another_type *_symbol_data, node_t *source);
 
 /**
@@ -87,15 +87,15 @@ enum STACK_CODES create_node(enum DATA_INFO elements_type, value_type _real_data
  * @param _symbol_data - possible type(token)
  * @return enum STACK_CODES to check succes of the operation
  */
-enum STACK_CODES push(stk_t *stk, value_type _real_data, another_type *_symbol_data);
+enum STACK_CODES push(stk_t *stk, _value_type _real_data, another_type *_symbol_data);
 
 /**
  * @brief This function removes a node from the top of the stack.
  *
  * @param stk - source
- * @return value_type - removed value
+ * @return _value_type - removed value
  */
-value_type pop_number_data(stk_t *stk);
+_value_type pop_number_data(stk_t *stk);
 
 /**
  * @brief This function removes a node from the top of the stack.

@@ -3,7 +3,7 @@
 
 void writing_operator(token_t *current_source, char _operator, int *current, int shift) {
     current_source->is_number = false;
-    current_source->operator= _operator;
+    current_source->oper = _operator;
     current_source->number = POISON_DOUBLE;
 
     (*current) += shift;
@@ -58,8 +58,8 @@ int8_t operator_priority(token_t *first, token_t *second) {
 }
 
 int8_t priority(token_t *data) {
-    int result;
-    switch (data->operator) {
+    int result = 0;
+    switch (data->oper) {
         case '(':
         case ')':
             result = 0;

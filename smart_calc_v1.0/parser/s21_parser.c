@@ -15,20 +15,26 @@ token_t *postfix_converter(token_t *infix, int infix_length, int *postfix_length
 
             (*postfix_length)++;
             current++;
-        } else if (infix[current].operator== 'x') {
-            postfix_expression[*postfix_length].operator= infix[current].operator;
+        } else if (infix[current].oper == 'x') {
+            postfix_expression[*postfix_length].oper = infix[current].oper;
             postfix_expression[*postfix_length].is_number = false;
 
             (*postfix_length)++;
             current++;
+        } else if (infix[current].oper == EXP) {
+            postfix_expression[*postfix_length].number = 2.7182818;
+            postfix_expression[*postfix_length].is_number = true;
+
+            (*postfix_length)++;
+            current++;
         } else {
-            if (infix[current].operator== '(') {
+            if (infix[current].oper == '(') {
                 push(&token_stk, POISON_DOUBLE, &infix[current]);
                 current++;
-            } else if (infix[current].operator== ')') {
+            } else if (infix[current].oper == ')') {
                 copy = pop_symbol_data(&token_stk);
-                while (copy->operator!= '(') {
-                    postfix_expression[*postfix_length].operator= copy->operator;
+                while (copy->oper != '(') {
+                    postfix_expression[*postfix_length].oper = copy->oper;
                     postfix_expression[*postfix_length].is_number = false;
 
                     (*postfix_length)++;
@@ -39,7 +45,7 @@ token_t *postfix_converter(token_t *infix, int infix_length, int *postfix_length
                 copy = top_symbol(&token_stk);
                 if (copy != POISON_PTR && operator_priority(copy, &infix[current]) >= 0) {
                     copy = pop_symbol_data(&token_stk);
-                    postfix_expression[*postfix_length].operator= copy->operator;
+                    postfix_expression[*postfix_length].oper = copy->oper;
                     postfix_expression[*postfix_length].is_number = false;
 
                     (*postfix_length)++;
@@ -53,7 +59,7 @@ token_t *postfix_converter(token_t *infix, int infix_length, int *postfix_length
 
     while (token_stk.elements_quantity != 0) {
         copy = pop_symbol_data(&token_stk);
-        postfix_expression[*postfix_length].operator= copy->operator;
+        postfix_expression[*postfix_length].oper = copy->oper;
         postfix_expression[*postfix_length].is_number = false;
 
         (*postfix_length)++;
@@ -83,12 +89,12 @@ token_t *input_tokenizer(char *expression, int *length) {
             case '*':
             case '/':
             case '^':
-            case '%':
-                writing_operator(&(data[*length]), expression[current], &current, 1);
+            case 'm':
+                writing_operator(&(data[*length]), '%', &current, 3);
                 (*length)++;
                 break;
             case '-':
-                if ((*length == 0) || data[*length - 1].operator== '(') {
+                if ((*length == 0) || data[*length - 1].oper == '(') {
                     data[*length].is_number = true;
                     data[*length].number = 0;
                     (*length)++;
@@ -108,6 +114,10 @@ token_t *input_tokenizer(char *expression, int *length) {
                 bracket_quantity--;
                 break;
 
+            case 'e':
+                writing_operator(&(data[*length]), EXP, &current, 3);
+                (*length)++;
+                break;
             case 's':
                 if (check_function(expression + current, "sin", &shift)) {
                     writing_operator(&(data[*length]), SIN, &current, shift);

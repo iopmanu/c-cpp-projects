@@ -8,7 +8,7 @@ enum STACK_CODES stack_ctor(stk_t *stk, enum DATA_INFO _elements_type) {
     return SUCCESS;
 }
 
-enum STACK_CODES create_node(enum DATA_INFO elements_type, value_type _real_data,
+enum STACK_CODES create_node(enum DATA_INFO elements_type, _value_type _real_data,
                              another_type *_symbol_data, node_t *source) {
     CHECK_BAD_PTR(source, ALLOCATION_ERROR);
 
@@ -25,7 +25,7 @@ enum STACK_CODES create_node(enum DATA_INFO elements_type, value_type _real_data
     return SUCCESS;
 }
 
-enum STACK_CODES push(stk_t *stk, value_type _real_data, another_type *_symbol_data) {
+enum STACK_CODES push(stk_t *stk, _value_type _real_data, another_type *_symbol_data) {
     CHECK_BAD_PTR(stk, NULL_POINTER);
     enum STACK_CODES code = SUCCESS;
 
@@ -41,10 +41,10 @@ enum STACK_CODES push(stk_t *stk, value_type _real_data, another_type *_symbol_d
     return SUCCESS;
 }
 
-value_type pop_number_data(stk_t *stk) {
+_value_type pop_number_data(stk_t *stk) {
     CHECK_BAD_PTR(stk, NULL_POINTER);
 
-    value_type _data = stk->top->data;
+    _value_type _data = stk->top->data;
 
     node_t *top_copy = stk->top;
     stk->top = stk->top->next;

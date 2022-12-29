@@ -19,6 +19,7 @@ enum FUNCTION_CODE {
     SQRT = 'q',
     LOG = 'l',
     LN = 'L',
+    EXP = 'e',
 };
 
 /**
@@ -29,7 +30,7 @@ enum FUNCTION_CODE {
  * @param current - current index of the infix expression
  * @param shift - length of the operator(function)
  */
-void writing_operator(token_t *current_source, char operator, int * current, int shift);
+void writing_operator(token_t *current_source, char oper, int * current, int shift);
 
 /**
  * @brief This function is for checking for the pressence of the math function

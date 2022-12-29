@@ -17,6 +17,35 @@ TEST_OBJS=$(BUILD_DIR)/tests/s21_tests.o
 
 all: clean s21_smart_calc.a tests
 
+QT_PROJECT_NAME = qt
+QT_PROJECT_FOLDER = ./$(QT_PROJECT_NAME)
+QT_PRO = $(QT_PROJECT_NAME).pro
+QT_MAKEFILE = $(QT_PROJECT_NAME)_Makefile
+QT_BUILD_FOLDER = build
+QT_APP_FOLDER = ../App
+DIST_FOLDER_NAME = SmartCalc-1.0
+
+generate_make:
+	@qmake $(QT_PROJECT_FOLDER)/$(QT_PRO) -o ./$(QT_BUILD_FOLDER)/$(QT_MAKEFILE)
+	@rm -rf .qmake.stash
+
+install: generate_make
+	@echo "Building application..."
+	@cd ./$(QT_BUILD_FOLDER) && make -sf $(QT_MAKEFILE)
+	@echo "Application builded."
+	@echo -n "Moving application to folder \"$(QT_APP_FOLDER)\"..."
+	@mkdir ./$(QT_APP_FOLDER)
+ifeq ($(OS), Darwin)
+	@mv ./$(QT_BUILD_FOLDER)/$(QT_PROJECT_NAME).app/Contents/MacOS/SmartCalc ./$(QT_APP_FOLDER)/$(QT_PROJECT_NAME).app
+else
+	@mv ./$(QT_BUILD_FOLDER)/$(QT_PROJECT_NAME) ./$(QT_APP_FOLDER)/$(QT_PROJECT_NAME)
+endif
+	@echo " Done."
+	@echo -n "Deleting build folder..."
+	@rm -rf $(QT_BUILD_FOLDER)
+	@echo " Done."
+	@echo "Installation complete!"
+
 tests: s21_smart_calc.a $(TEST_OBJS)
 	$(CC) $(CFLAGS) $(TEST_OBJS) s21_smart_calc.a $(LFLAGS) -o s21_test.out
 
@@ -49,7 +78,6 @@ clean:
 	rm -f s21_smart_calc.a
 	rm -rf $(BUILD_DIR) $(GCOV_DIR)
 	rm -rf *out *info
-	rm -rf $(DOC_DIR)
-
+	rm -rf $(DOC_DIR) $(QT_APP_FOLDER)
 codestyle:
 	clang-format -i $(SRC)

@@ -2,6 +2,22 @@
 #include <math.h>
 #include <tgmath.h>
 
+int8_t main_calculations(char *infix_expression, double x, double *answer) {
+    int length = 0, postfix_length = 0;
+    token_t *postfix_expression = NULL;
+    token_t *infix = input_tokenizer(infix_expression, &length);
+    int8_t error_code = false;
+
+    if (infix != NULL) {
+        postfix_expression = postfix_converter(infix, length, &postfix_length);
+    } else {
+        error_code = true;
+    }
+
+    return (!error_code && !calculate(postfix_expression, postfix_length, x, answer)) ? false
+                                                                                      : true;
+}
+
 int8_t calculate(token_t *postfix, int length, double x, double *answer) {
     stk_t double_stk;
     stack_ctor(&double_stk, REAL_NUMBER_DATA);
@@ -11,9 +27,8 @@ int8_t calculate(token_t *postfix, int length, double x, double *answer) {
         if (postfix[i].is_number) {
             push(&double_stk, postfix[i].number, POISON_PTR);
         } else {
-            printf("%c\n\n", postfix[i].operator);
-            function_calculation(postfix[i].operator, & double_stk, &check);
-            arithmetic_processing(postfix[i].operator, & double_stk, &check, x);
+            function_calculation(postfix[i].oper, &double_stk, &check);
+            arithmetic_processing(postfix[i].oper, &double_stk, &check, x);
         }
     }
 
@@ -29,10 +44,10 @@ int8_t calculate(token_t *postfix, int length, double x, double *answer) {
     return check;
 }
 
-void arithmetic_processing(char operator, stk_t * double_stk, int8_t *check, double x) {
+void arithmetic_processing(char oper, stk_t *double_stk, int8_t *check, double x) {
     double second = 0;
 
-    switch (operator) {
+    switch (oper) {
         case 'x':
             push(double_stk, x, POISON_PTR);
             break;
@@ -117,7 +132,6 @@ void function_calculation(char function, stk_t *double_stk, int8_t *check) {
         case ASIN:
             if (double_stk->top != NULL) {
                 push(double_stk, asin(pop_number_data(double_stk)), POISON_PTR);
-                printf("Herer\n\n\n");
             } else {
                 (*check) = true;
             }
