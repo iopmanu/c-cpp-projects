@@ -37,27 +37,28 @@ void Graph::scailing() {
         this->step = 0.5;
 }
 
-void Graph::plot(char *expression) {
+int Graph::plot(char *expression) {
+    int8_t error_code = false;
+
     for (double x = xBegin; (x <= xEnd); x += step) {
         double calculated_number = 0;
         if (main_calculations(expression, x, &calculated_number)) {
-            continue;
+                error_code = true;
         } else {
             this->graph_points.first.push_back(x);
             this->graph_points.second.push_back((calculated_number));
-       }
+        }
     }
 
-    this->last_expression = expression;
+    return error_code;
 }
 
 void Graph::replot_clicked() {
-    this->graph_points.first.clear();
-    this->graph_points.second.clear();
     this->rescale();
     this->scailing();
-    this->plot(this->last_expression);
-    this->graph_proccessing();
+    ui->graph->yAxis->setRange(this->xBegin, this->xEnd);
+    ui->graph->xAxis->setRange(this->xBegin, this->xEnd);
+    ui->graph->replot();
 }
 
 void Graph::graph_proccessing() {

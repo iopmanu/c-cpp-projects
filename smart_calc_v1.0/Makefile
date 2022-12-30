@@ -15,7 +15,7 @@ OBJS := $(SRC:%.c=$(BUILD_DIR)/%.o)
 TEST=
 TEST_OBJS=$(BUILD_DIR)/tests/s21_tests.o
 
-all: clean s21_smart_calc.a tests
+all: install tests clean
 
 QT_PROJECT_NAME = qt
 QT_PROJECT_FOLDER = ./$(QT_PROJECT_NAME)
@@ -53,6 +53,7 @@ uninstall:
 
 tests: s21_smart_calc.a $(TEST_OBJS)
 	$(CC) $(CFLAGS) $(TEST_OBJS) s21_smart_calc.a $(LFLAGS) -o s21_test.out
+	./s21_test.out
 
 s21_smart_calc.a: $(OBJS)
 	@mkdir -p $(BUILD_DIR)
@@ -74,6 +75,17 @@ gcov_report: clean
 	open $(GCOV_DIR)/index.html
 	rm -Rf *.gcda *.cov *.gcno *.info
 
+TAR_DIR = SmartCalc_v1.0_v1.0_Archive
+
+dist:
+	rm -Rf $(TAR_DIR)
+	mkdir $(TAR_DIR)
+	mkdir $(TAR_DIR)/src
+	cp $(SRC) qt/* $(TAR_DIR)/src
+	tar cvzf $(TAR_DIR).tgz $(TAR_DIR)
+	mv $(TAR_DIR).tgz ..
+	rm -Rf $(TAR_DIR)
+
 dvi:
 	doxygen Doxyfile
 	open html/index.html
@@ -83,6 +95,6 @@ clean:
 	rm -f s21_smart_calc.a
 	rm -rf $(BUILD_DIR) $(GCOV_DIR)
 	rm -rf *out *info
-	rm -rf $(DOC_DIR) $(QT_APP_FOLDER)
+	rm -rf $(DOC_DIR) $(TAR_DIR) ../$(TAR_DIR).tgz
 codestyle:
 	clang-format -i $(SRC)

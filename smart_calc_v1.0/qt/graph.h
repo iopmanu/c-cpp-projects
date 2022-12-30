@@ -19,7 +19,7 @@ public:
     explicit Graph(QWidget *parent = nullptr);
     void scailing();
     void rescale();
-    void plot(char *expression);
+    int plot(char *expression);
     void graph_proccessing();
     ~Graph();
     private slots:
@@ -28,9 +28,9 @@ public:
 
 private:
     Ui::Graph *ui;
-    double xBegin = -100, xEnd = 100;
+    double xBegin = -1000000, xEnd = 1000000;
     double step;
-    char *last_expression;
+    char *last_expression = NULL;
     std::pair<std::vector<double>, std::vector<double>> graph_points;
 };
 
