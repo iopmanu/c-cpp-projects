@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "graph.h"
 
 extern "C" {
 #include "../s21_calculation/s21_calculation.h"
@@ -23,6 +24,7 @@ public:
     void make_expression();
     void clicked_clear();
     void clicked_equal();
+    void clicked_graph();
 private:
     Ui::MainWindow *ui;
     bool flag = false;

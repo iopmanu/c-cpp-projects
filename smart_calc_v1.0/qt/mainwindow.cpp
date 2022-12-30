@@ -40,6 +40,7 @@ MainWindow::MainWindow(QWidget *parent)
       connect(ui->pushButton_ln, SIGNAL(clicked()), this, SLOT(signal_processing()));
       connect(ui->pushButton_exp, SIGNAL(clicked()), this, SLOT(signal_processing()));
       connect(ui->pushButton_equal, SIGNAL(clicked()), this, SLOT(signal_processing()));
+      connect(ui->pushButton_graph, SIGNAL(clicked()), this, SLOT(clicked_graph()));
 }
 
 MainWindow::~MainWindow()
@@ -102,4 +103,18 @@ void MainWindow::clicked_equal() {
     }
 
     flag = true;
+}
+
+void MainWindow::clicked_graph() {
+    Graph *graph = new Graph();
+
+    QString screen_expression = ui->label->text();
+    QByteArray sequence = screen_expression.toLocal8Bit();
+    char *infix_expression = sequence.data();
+
+    graph->scailing();
+    graph->plot(infix_expression);
+    graph->graph_proccessing();
+    //graph->replot_clicked();
+    graph->show();
 }

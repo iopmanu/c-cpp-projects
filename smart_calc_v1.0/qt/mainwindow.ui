@@ -803,6 +803,19 @@ QPushButton:pressed {
      <string>tan</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="pushButton_graph">
+    <property name="geometry">
+     <rect>
+      <x>122</x>
+      <y>366</y>
+      <width>244</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Graph</string>
+    </property>
+   </widget>
   </widget>
  </widget>
  <resources/>

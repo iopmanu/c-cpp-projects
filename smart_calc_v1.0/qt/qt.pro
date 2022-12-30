@@ -11,21 +11,26 @@ CONFIG += c++11
 DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
+    graph.cpp \
     main.cpp \
     mainwindow.cpp \
    ../s21_calculation/s21_calculation.c \
     ../parser/s21_parser.c \
     ../parser/s21_helper_parser.c \
     ../data_structure/s21_stack.c \
+    qcustomplot.cpp
 
 HEADERS += \
+    graph.h \
     mainwindow.h \
     ../s21_calculation/s21_calculation.h \
     ../parser/s21_parser.h \
     ../parser/s21_helper_parser.h \
     ../data_structure/s21_stack.h \
+    qcustomplot.h
 
 FORMS += \
+    graph.ui \
     mainwindow.ui
 
 # Default rules for deployment.
