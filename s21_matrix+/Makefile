@@ -23,3 +23,6 @@ $(BUILD_DIR)/%.o: %.c
 clean:
 	rm -f s21_matrix_oop.a
 	rm -rf $(BUILD_DIR)
+
+codestyle:
+	clang-format -i $(SRC_DIR)/include/* $(SRC_DIR)/code/*
