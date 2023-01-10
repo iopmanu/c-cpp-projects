@@ -78,18 +78,6 @@ void LinearAlgebra::Matrix::SetRows(const int &rows_) {
     *this = reshaped;
 }
 
-void LinearAlgebra::Matrix::Resize(const int old_rows, const int old_columns) {
-    Matrix reshaped{rows, columns};
-
-    for (int i = 0; i < old_rows; i++) {
-        for (int j = 0; j < old_columns; j++) {
-            reshaped(i, j) = At(i, j);
-        }
-    }
-
-    *this = reshaped;
-}
-
 bool LinearAlgebra::Matrix::EqMatrix(const Matrix &other) const {
     if (other.rows != rows || other.columns != columns) {
         return false;
@@ -144,12 +132,12 @@ void LinearAlgebra::Matrix::MulMatrix(const Matrix &other) {
             "Columns of the left matrix shoud be equal to rows of the right one");
     }
 
-    Matrix result{columns, other.rows};
+    Matrix result{rows, other.columns};
 
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < columns; j++) {
+    for (int i = 0; i < result.rows; i++) {
+        for (int j = 0; j < result.columns; j++) {
             for (int k = 0; k < columns; k++) {
-                result(i, j) += At(i, j) * other.At(i, j);
+                result(i, j) += At(i, k) * other.At(k, j);
             }
         }
     }
@@ -170,25 +158,27 @@ LinearAlgebra::Matrix LinearAlgebra::Matrix::Transpose() const {
 }
 
 bool LinearAlgebra::Matrix::operator==(const Matrix &other) noexcept { return EqMatrix(other); }
+bool LinearAlgebra::Matrix::operator!=(const Matrix &other) noexcept { return !EqMatrix(other); }
 
 LinearAlgebra::Matrix &LinearAlgebra::Matrix::operator=(const Matrix &other) {
-    rows = other.rows;
-    columns = other.columns;
+    if (this != &other) {
+        rows = other.rows;
+        columns = other.columns;
 
-    if (matrix != nullptr) {
         delete[] matrix;
+        matrix = new double[other.rows * other.columns];
+        std::copy_n(other.matrix, other.rows * other.columns, matrix);
     }
-
-    matrix = new double[other.rows * other.columns];
-    std::copy_n(other.matrix, other.rows * other.columns, matrix);
 
     return *this;
 }
 
 LinearAlgebra::Matrix &LinearAlgebra::Matrix::operator=(Matrix &&other) noexcept {
-    rows = std::move(other.rows);
-    columns = std::move(other.columns);
-    matrix = std::move(other.matrix);
+    if (this != &other) {
+        std::swap(rows, other.rows);
+        std::swap(columns, other.columns);
+        std::swap(matrix, other.matrix);
+    }
 
     return *this;
 }

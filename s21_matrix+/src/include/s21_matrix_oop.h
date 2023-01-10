@@ -37,6 +37,7 @@ public:
     Matrix operator*(const double number) const;
 
     bool operator==(const Matrix &other) noexcept;
+    bool operator!=(const Matrix &other) noexcept;
     Matrix &operator=(const Matrix &other);
     Matrix &operator=(Matrix &&other) noexcept;
     Matrix &operator+=(const Matrix &other);
