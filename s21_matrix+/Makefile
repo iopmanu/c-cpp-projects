@@ -1,4 +1,4 @@
-CC = gcc
+CC = g++
 CFLAGS = -Wall -Wextra -pedantic
 SRC_DIR= src
 TEST_DIR=tests
@@ -19,6 +19,9 @@ s21_matrix_oop.a: $(OBJS)
 $(BUILD_DIR)/%.o: %.cpp
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@ $(LFLAGS)
+
+$(BUILD_DIR)/main.o: main.cpp
+	$(CC) $(CLFAGS) -c main.cpp -o $(BUILD_DIR)/main.o
 
 clean:
 	rm -f s21_matrix_oop.a

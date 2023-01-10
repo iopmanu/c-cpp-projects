@@ -1,7 +1,7 @@
 #ifndef SRC_MATRIX_H_
 #define SRC_MATRIX_H_
 
-#define EPS 1e-7
+#define EPS 1e-6
 
 #include <algorithm>
 #include <cmath>
@@ -50,9 +50,14 @@ public:
     void SubMatrix(const Matrix &other);
     void MulNumber(const double num);
     void MulMatrix(const Matrix &other);
+
     Matrix Transpose() const;
     Matrix CalcComplements() const;
     double Determinant() const;
+    void GaussAlgo(int *gaussFactor);
+    void SwapRows(int one, int another);
+    void AddRows(int one, int another, double factor);
+    Matrix Minor(int row, int column) const;
     Matrix InverseMatrix() const;
 };
 }  // namespace LinearAlgebra
