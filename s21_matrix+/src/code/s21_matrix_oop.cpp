@@ -1,13 +1,14 @@
 #include "../include/s21_matrix_oop.h"
+#include <stdlib.h>
 
 LinearAlgebra::Matrix::Matrix() : rows(0), columns(0), matrix(nullptr) {}
 
 LinearAlgebra::Matrix::Matrix(int rows_, int columns_) : rows(rows_), columns(columns_) {
-    if (rows_ < 1 || columns_ < 1) {
+    if (rows < 1 || columns < 1) {
         throw std::invalid_argument("Wrong value of rows/columns");
     }
 
-    matrix = new double[rows_ * columns_]();
+    matrix = new double[rows * columns]();
 }
 
 LinearAlgebra::Matrix::Matrix(const Matrix &other) : rows(other.rows), columns(other.columns) {
@@ -27,12 +28,8 @@ LinearAlgebra::Matrix::~Matrix() {
     delete[] matrix;
 }
 
-int constexpr LinearAlgebra::Matrix::GetColumns() const noexcept { return columns; }
-
-int constexpr LinearAlgebra::Matrix::GetRows() const noexcept { return rows; }
-
 double &LinearAlgebra::Matrix::operator()(int row, int col) {
-    if (rows >= row || columns >= col) {
+    if (row >= rows || col >= columns) {
         throw std::invalid_argument("Wrong value of rows/columns");
     }
 
@@ -52,7 +49,16 @@ void LinearAlgebra::Matrix::SetColumns(const int &columns_) {
         throw std::invalid_argument("Wrong value of columns");
     }
 
-    Resize();
+    Matrix reshaped{rows, columns_};
+
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < std::min(columns, columns_); j++) {
+            reshaped(i, j) = At(i, j);
+        }
+    }
+
+    columns = columns_;
+    *this = reshaped;
 }
 
 void LinearAlgebra::Matrix::SetRows(const int &rows_) {
@@ -60,14 +66,23 @@ void LinearAlgebra::Matrix::SetRows(const int &rows_) {
         throw std::invalid_argument("Wrong value of rows");
     }
 
-    Resize();
+    Matrix reshaped{rows_, columns};
+
+    for (int i = 0; i < std::min(rows, rows_); i++) {
+        for (int j = 0; j < columns; j++) {
+            reshaped(i, j) = At(i, j);
+        }
+    }
+
+    rows = rows_;
+    *this = reshaped;
 }
 
-void LinearAlgebra::Matrix::Resize() {
+void LinearAlgebra::Matrix::Resize(const int old_rows, const int old_columns) {
     Matrix reshaped{rows, columns};
 
-    for (int i = 0; i < rows; ++i) {
-        for (int j = 0; j < columns; ++j) {
+    for (int i = 0; i < old_rows; i++) {
+        for (int j = 0; j < old_columns; j++) {
             reshaped(i, j) = At(i, j);
         }
     }
@@ -157,13 +172,25 @@ LinearAlgebra::Matrix LinearAlgebra::Matrix::Transpose() const {
 bool LinearAlgebra::Matrix::operator==(const Matrix &other) noexcept { return EqMatrix(other); }
 
 LinearAlgebra::Matrix &LinearAlgebra::Matrix::operator=(const Matrix &other) {
-    Matrix result{other};
-    return result;
+    rows = other.rows;
+    columns = other.columns;
+
+    if (matrix != nullptr) {
+        delete[] matrix;
+    }
+
+    matrix = new double[other.rows * other.columns];
+    std::copy_n(other.matrix, other.rows * other.columns, matrix);
+
+    return *this;
 }
 
 LinearAlgebra::Matrix &LinearAlgebra::Matrix::operator=(Matrix &&other) noexcept {
-    Matrix result{other};
-    return result;
+    rows = std::move(other.rows);
+    columns = std::move(other.columns);
+    matrix = std::move(other.matrix);
+
+    return *this;
 }
 
 LinearAlgebra::Matrix &LinearAlgebra::Matrix::operator+=(const Matrix &other) {
@@ -208,15 +235,4 @@ LinearAlgebra::Matrix LinearAlgebra::Matrix::operator*(const double num) const {
     Matrix result{*this};
     result.MulNumber(num);
     return result;
-}
-
-std::ostream &operator<<(std::ostream &out, LinearAlgebra::Matrix source) {
-    for (int i = 0; i < source.GetRows(); i++) {
-        for (int j = 0; j < source.GetColumns(); j++) {
-            out << source.At(i, j) << " ";
-        }
-        out << std::endl;
-    }
-
-    return out;
 }

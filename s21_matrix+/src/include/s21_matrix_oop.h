@@ -15,8 +15,6 @@ private:
     int rows, columns;
     double *matrix;
 
-    void Resize();
-
 public:
     Matrix();
     Matrix(int rows, int columns);
@@ -24,15 +22,14 @@ public:
     Matrix(Matrix &&other);
     ~Matrix();
 
-    constexpr int GetRows() const noexcept;
-    constexpr int GetColumns() const noexcept;
+    constexpr int GetColumns() const noexcept { return columns; }
+    constexpr int GetRows() const noexcept { return rows; }
+    
     double &operator()(int row, int col);
     const double &At(int row, int col) const;
 
     void SetRows(const int &rows_);
     void SetColumns(const int &columns);
-
-    friend std::ostream &operator<<(std::ostream &out, Matrix source);
 
     Matrix operator+(const Matrix &other) const;
     Matrix operator-(const Matrix &other) const;
