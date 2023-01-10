@@ -24,7 +24,7 @@ public:
 
     constexpr int GetColumns() const noexcept { return columns; }
     constexpr int GetRows() const noexcept { return rows; }
-    
+
     double &operator()(int row, int col);
     const double &At(int row, int col) const;
 
