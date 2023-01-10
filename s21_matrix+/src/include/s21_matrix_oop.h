@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <cmath>
 #include <exception>
+#include <iostream>
 #include <stdexcept>
 
 namespace LinearAlgebra {
@@ -13,6 +14,8 @@ class Matrix {
 private:
     int rows, columns;
     double *matrix;
+
+    void Resize();
 
 public:
     Matrix();
@@ -28,7 +31,8 @@ public:
 
     void SetRows(const int &rows_);
     void SetColumns(const int &columns);
-    void Resize();
+
+    friend std::ostream &operator<<(std::ostream &out, Matrix source);
 
     Matrix operator+(const Matrix &other) const;
     Matrix operator-(const Matrix &other) const;

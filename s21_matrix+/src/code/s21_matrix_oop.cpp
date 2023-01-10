@@ -33,7 +33,7 @@ int constexpr LinearAlgebra::Matrix::GetRows() const noexcept { return rows; }
 
 double &LinearAlgebra::Matrix::operator()(int row, int col) {
     if (rows >= row || columns >= col) {
-        throw std::invalid_argument("Wrond value of rows/columns");
+        throw std::invalid_argument("Wrong value of rows/columns");
     }
 
     return matrix[row * columns + col];
@@ -41,7 +41,7 @@ double &LinearAlgebra::Matrix::operator()(int row, int col) {
 
 const double &LinearAlgebra::Matrix::At(int row, int col) const {
     if (row >= rows || col >= columns) {
-        throw std::invalid_argument("Wrond value of rows/columns");
+        throw std::invalid_argument("Wrong value of rows/columns");
     }
 
     return matrix[row * columns + col];
@@ -125,10 +125,11 @@ void LinearAlgebra::Matrix::MulNumber(const double num) {
 
 void LinearAlgebra::Matrix::MulMatrix(const Matrix &other) {
     if (columns != other.rows) {
-        throw std::logic_error("Columns of the left matrix shoud be equal to rows of the right one");
+        throw std::logic_error(
+            "Columns of the left matrix shoud be equal to rows of the right one");
     }
 
-    Matrix result { columns, other.rows };
+    Matrix result{columns, other.rows};
 
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < columns; j++) {
@@ -141,7 +142,29 @@ void LinearAlgebra::Matrix::MulMatrix(const Matrix &other) {
     *this = std::move(result);
 }
 
+LinearAlgebra::Matrix LinearAlgebra::Matrix::Transpose() const {
+    Matrix result{GetColumns(), GetRows()};
+
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < columns; j++) {
+            result(i, j) = At(j, i);
+        }
+    }
+
+    return result;
+}
+
 bool LinearAlgebra::Matrix::operator==(const Matrix &other) noexcept { return EqMatrix(other); }
+
+LinearAlgebra::Matrix &LinearAlgebra::Matrix::operator=(const Matrix &other) {
+    Matrix result{other};
+    return result;
+}
+
+LinearAlgebra::Matrix &LinearAlgebra::Matrix::operator=(Matrix &&other) noexcept {
+    Matrix result{other};
+    return result;
+}
 
 LinearAlgebra::Matrix &LinearAlgebra::Matrix::operator+=(const Matrix &other) {
     SumMatrix(other);
@@ -163,3 +186,37 @@ LinearAlgebra::Matrix &LinearAlgebra::Matrix::operator*=(const Matrix &other) {
     return *this;
 }
 
+LinearAlgebra::Matrix LinearAlgebra::Matrix::operator+(const Matrix &other) const {
+    Matrix result{*this};
+    result.SumMatrix(other);
+    return result;
+}
+
+LinearAlgebra::Matrix LinearAlgebra::Matrix::operator-(const Matrix &other) const {
+    Matrix result{*this};
+    result.SubMatrix(other);
+    return result;
+}
+
+LinearAlgebra::Matrix LinearAlgebra::Matrix::operator*(const Matrix &other) const {
+    Matrix result{*this};
+    result.MulMatrix(other);
+    return result;
+}
+
+LinearAlgebra::Matrix LinearAlgebra::Matrix::operator*(const double num) const {
+    Matrix result{*this};
+    result.MulNumber(num);
+    return result;
+}
+
+std::ostream &operator<<(std::ostream &out, LinearAlgebra::Matrix source) {
+    for (int i = 0; i < source.GetRows(); i++) {
+        for (int j = 0; j < source.GetColumns(); j++) {
+            out << source.At(i, j) << " ";
+        }
+        out << std::endl;
+    }
+
+    return out;
+}
