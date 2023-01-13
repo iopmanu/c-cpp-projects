@@ -33,7 +33,7 @@ void rotate_frame_model(matrix_t *points, size_t quantity, double *rotation) {
     CREATE_ROTATE_X_MATRIX(x_rotate, rotation[0]);
     CREATE_ROTATE_Y_MATRIX(y_rotate, rotation[1]);
     CREATE_ROTATE_Z_MATRIX(z_rotate, rotation[2]);
-    
+
     s21_mult_matrix(&x_rotate, &y_rotate, &x_rotate);
     matrix_t xyz_rotate;
     s21_mult_matrix(&x_rotate, &z_rotate, &xyz_rotate);
