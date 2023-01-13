@@ -16,8 +16,8 @@ OBJS := $(SRC:%.c=$(BUILD_DIR)/%.o)
 TEST=
 TEST_OBJS=$(BUILD_DIR)/tests/s21_tests.o
 
-all: clean s21_lib.a
-	gcc -static -o a.out main.c s21_lib.a
+all: clean
+	$(CC) $(CFLAGS) $(SRC) -o a.out -lm
 
 QT_PROJECT_NAME = qt
 QT_PROJECT_FOLDER = ./$(QT_PROJECT_NAME)

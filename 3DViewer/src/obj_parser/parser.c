@@ -10,9 +10,10 @@ enum ERRCODE reading_obj_file(const char *filename, object *model) {
     counting_model_elements(&model->conf, obj_file);
     fseek(obj_file, 0, SEEK_SET);
 
-    /*   object_ctor(model);
-       reading_model_elements(model, obj_file);
-   */
+    object_ctor(model);
+
+    reading_model_elements(model, obj_file);
+
     return status;
 }
 
@@ -95,8 +96,7 @@ size_t count_read_surface(char *current_line, surface_t *surfaces) {
                 number = false;
             }
 
-            number_order_validation(&current_line, conf, &points_quantity,
-                                    &surfaces[points_quantity]);
+            number_order_validation(&current_line, conf, &points_quantity, surfaces);
             number = true;
         } else if (isspace(*current_line)) {
             space = true;
@@ -141,8 +141,12 @@ void object_ctor(object *model) {
 
 void object_dtor(object *model) {
     for (size_t i = 0; i < model->conf.vertex_quantity; i++) {
-        free(&model->vertices[i]);
+        s21_remove_matrix(&model->vertices[i]);
     }
     free(model->vertices);
+
+    for (size_t i = 0; i < model->conf.surfaces_quantity; i++) {
+        free(model->surfaces[i].vertices_sequence);
+    }
     free(model->surfaces);
 }
