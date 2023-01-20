@@ -14,10 +14,9 @@ DOC_DIR=html
 SRC  := $(shell find $(SRC_DIR) -name "*.c" | sed -e 's/\.\///')
 OBJS := $(SRC:%.c=$(BUILD_DIR)/%.o)
 TEST=
-TEST_OBJS=$(BUILD_DIR)/tests/s21_tests.o
+TEST_OBJS=$(BUILD_DIR)/tests/tests.o
 
 all: clean
-	$(CC) $(CFLAGS) $(SRC) -o a.out -lm
 
 QT_PROJECT_NAME = qt
 QT_PROJECT_FOLDER = ./$(QT_PROJECT_NAME)
@@ -25,7 +24,7 @@ QT_PRO = $(QT_PROJECT_NAME).pro
 QT_MAKEFILE = $(QT_PROJECT_NAME)_Makefile
 QT_BUILD_FOLDER = build
 QT_APP_FOLDER = ../App
-DIST_FOLDER_NAME = SmartCalc-1.0
+DIST_FOLDER_NAME = 3DViewer-v1.0
 
 generate_make:
 	@qmake $(QT_PROJECT_FOLDER)/$(QT_PRO) -o ./$(QT_BUILD_FOLDER)/$(QT_MAKEFILE)
@@ -53,8 +52,8 @@ uninstall:
 	@rm -rf $(QT_APP_FOLDER)
 	@echo " Done."
 
-tests: s21_smart_calc.a $(TEST_OBJS)
-	$(CC) $(CFLAGS) $(TEST_OBJS) s21_smart_calc.a $(LFLAGS) -o s21_test.out
+tests:  s21_lib.a $(TEST_OBJS)
+	$(CC) $(CFLAGS) $(TEST_OBJS) s21_lib.a $(LFLAGS) -o s21_test.out
 	./s21_test.out
 
 s21_lib.a: clean $(OBJS)
@@ -93,7 +92,7 @@ clean:
 	rm -f *.gcda *.gcov *.o *.gcno
 	rm -f s21_lib.a
 	rm -rf $(BUILD_DIR) $(GCOV_DIR)
-	rm -rf *out *info
+	rm -rf *out *info build*
 	rm -rf $(DOC_DIR) $(TAR_DIR) ../$(TAR_DIR).tgz
 codestyle:
 	clang-format -i $(SRC)

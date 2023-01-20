@@ -34,9 +34,10 @@ void rotate_frame_model(matrix_t *points, size_t quantity, double *rotation) {
     CREATE_ROTATE_Y_MATRIX(y_rotate, rotation[1]);
     CREATE_ROTATE_Z_MATRIX(z_rotate, rotation[2]);
 
-    s21_mult_matrix(&x_rotate, &y_rotate, &x_rotate);
-    matrix_t xyz_rotate;
-    s21_mult_matrix(&x_rotate, &z_rotate, &xyz_rotate);
+    matrix_t xy_rotate = {0};
+    s21_mult_matrix(&x_rotate, &y_rotate, &xy_rotate);
+    matrix_t xyz_rotate = {0};
+    s21_mult_matrix(&xy_rotate, &z_rotate, &xyz_rotate);
 
     for (size_t i = 0; i < quantity; i++) {
         matrix_t transformed;
@@ -48,5 +49,6 @@ void rotate_frame_model(matrix_t *points, size_t quantity, double *rotation) {
     s21_remove_matrix(&x_rotate);
     s21_remove_matrix(&y_rotate);
     s21_remove_matrix(&z_rotate);
+    s21_remove_matrix(&xy_rotate);
     s21_remove_matrix(&xyz_rotate);
 }

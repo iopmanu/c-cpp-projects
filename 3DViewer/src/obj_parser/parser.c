@@ -18,10 +18,10 @@ enum ERRCODE reading_obj_file(const char *filename, object *model) {
 }
 
 enum ERRCODE open_obj_file(const char *filename, FILE **file) {
-    assert(filename != NULL);
     enum ERRCODE fopen_status = SUCCESS_E;
     if (filename == NULL) {
         fopen_status = NULLPTR_E;
+        return fopen_status;
     }
 
     *file = fopen(filename, "r");

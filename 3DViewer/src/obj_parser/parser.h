@@ -85,6 +85,7 @@ typedef struct object {
  *
  * @param model - constructable object
  */
+
 void object_ctor(object *model);
 
 /**
@@ -172,5 +173,7 @@ size_t count_read_surface(char *current_line, surface_t *surfaces);
  */
 void number_order_validation(char **current_line, surface_config conf, size_t *points_quantity,
                              surface_t *surfaces);
+
+object fuck_this_shit();
 
 #endif  // SRC_PARSER_H_

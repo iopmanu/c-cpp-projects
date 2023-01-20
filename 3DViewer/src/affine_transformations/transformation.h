@@ -113,4 +113,9 @@ Product of this matrix on vertex moves this vertex on dx dy dz increment.
         scale.matrix[3][3] = 1;                              \
     } while (0)
 
+void move_frame_model(matrix_t *points, size_t quantity, double *increments);
+
+void scale_frame_model(matrix_t *points, size_t quantity, double *resize);
+
+void rotate_frame_model(matrix_t *points, size_t quantity, double *rotation);
 #endif  // AFFINE_SRC_H_
