@@ -1,6 +1,10 @@
 #include "parser.h"
+#include <locale.h>
 
 enum ERRCODE reading_obj_file(const char *filename, object *model) {
+    setlocale(LC_ALL, "en-US");
+    setlocale(LC_NUMERIC, "C");
+
     FILE *obj_file = NULL;
     enum ERRCODE status = SUCCESS_E;
     if ((status = open_obj_file(filename, &obj_file)) != SUCCESS_E) {

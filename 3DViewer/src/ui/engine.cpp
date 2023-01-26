@@ -17,7 +17,7 @@ void GraphEngine::resizeGL(int w, int h)
 
 void GraphEngine::paintGL()
 {
-        this->InitModel("/home/iopmanu/C8_3DViewer_v1.0-0/src/objects/test.obj");
+        this->InitModel("/home/iopmanu/c-cpp-projects/3DViewer/src/objects/test.obj");
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glMatrixMode(GL_MODELVIEW);
