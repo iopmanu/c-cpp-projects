@@ -1,9 +1,10 @@
 #include "../include/s21_matrix_oop.h"
 #include <stdlib.h>
+#include <utility>
 
-LinearAlgebra::Matrix::Matrix() : rows(0), columns(0), matrix(nullptr) {}
+LinearAlgebra::S21Matrix::S21Matrix() : rows(0), columns(0), matrix(nullptr) {}
 
-LinearAlgebra::Matrix::Matrix(int rows_, int columns_) : rows(rows_), columns(columns_) {
+LinearAlgebra::S21Matrix::S21Matrix(int rows_, int columns_) : rows(rows_), columns(columns_) {
     if (rows < 1 || columns < 1) {
         throw std::invalid_argument("Wrong value of rows/columns");
     }
@@ -11,24 +12,27 @@ LinearAlgebra::Matrix::Matrix(int rows_, int columns_) : rows(rows_), columns(co
     matrix = new double[rows * columns]();
 }
 
-LinearAlgebra::Matrix::Matrix(const Matrix &other) : rows(other.rows), columns(other.columns) {
+LinearAlgebra::S21Matrix::S21Matrix(const S21Matrix &other)
+    : rows(other.rows), columns(other.columns) {
     matrix = new double[other.rows * other.columns];
     std::copy_n(other.matrix, other.rows * other.columns, matrix);
 }
 
-LinearAlgebra::Matrix::Matrix(Matrix &&other) {
-    rows = std::move(other.rows);
-    columns = std::move(other.columns);
-    matrix = std::move(other.matrix);
+LinearAlgebra::S21Matrix::S21Matrix(S21Matrix &&other) {
+    if (this != &other) {
+        rows = std::exchange(other.rows, 0);
+        columns = std::exchange(other.columns, 0);
+        matrix = std::exchange(other.matrix, nullptr);
+    }
 }
 
-LinearAlgebra::Matrix::~Matrix() {
+LinearAlgebra::S21Matrix::~S21Matrix() {
     rows = 0;
     columns = 0;
     delete[] matrix;
 }
 
-double &LinearAlgebra::Matrix::operator()(int row, int col) {
+double &LinearAlgebra::S21Matrix::operator()(int row, int col) {
     if (row >= rows || col >= columns) {
         throw std::invalid_argument("Wrong value of rows/columns");
     }
@@ -36,7 +40,7 @@ double &LinearAlgebra::Matrix::operator()(int row, int col) {
     return matrix[row * columns + col];
 }
 
-const double &LinearAlgebra::Matrix::At(int row, int col) const {
+const double &LinearAlgebra::S21Matrix::At(int row, int col) const {
     if (row >= rows || col >= columns) {
         throw std::invalid_argument("Wrong value of rows/columns");
     }
@@ -44,12 +48,12 @@ const double &LinearAlgebra::Matrix::At(int row, int col) const {
     return matrix[row * columns + col];
 }
 
-void LinearAlgebra::Matrix::SetColumns(const int &columns_) {
+void LinearAlgebra::S21Matrix::SetColumns(const int &columns_) {
     if (columns_ < 1) {
         throw std::invalid_argument("Wrong value of columns");
     }
 
-    Matrix reshaped{rows, columns_};
+    S21Matrix reshaped{rows, columns_};
 
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < std::min(columns, columns_); j++) {
@@ -61,12 +65,12 @@ void LinearAlgebra::Matrix::SetColumns(const int &columns_) {
     *this = reshaped;
 }
 
-void LinearAlgebra::Matrix::SetRows(const int &rows_) {
+void LinearAlgebra::S21Matrix::SetRows(const int &rows_) {
     if (rows_ < 1) {
         throw std::invalid_argument("Wrong value of rows");
     }
 
-    Matrix reshaped{rows_, columns};
+    S21Matrix reshaped{rows_, columns};
 
     for (int i = 0; i < std::min(rows, rows_); i++) {
         for (int j = 0; j < columns; j++) {
@@ -78,7 +82,7 @@ void LinearAlgebra::Matrix::SetRows(const int &rows_) {
     *this = reshaped;
 }
 
-bool LinearAlgebra::Matrix::EqMatrix(const Matrix &other) const {
+bool LinearAlgebra::S21Matrix::EqMatrix(const S21Matrix &other) const {
     if (other.rows != rows || other.columns != columns) {
         return false;
     }
@@ -94,7 +98,7 @@ bool LinearAlgebra::Matrix::EqMatrix(const Matrix &other) const {
     return true;
 }
 
-void LinearAlgebra::Matrix::SumMatrix(const Matrix &other) {
+void LinearAlgebra::S21Matrix::SumMatrix(const S21Matrix &other) {
     if (other.rows != rows || other.columns != columns) {
         throw std::logic_error("Rows and columns should be the same");
     }
@@ -106,7 +110,7 @@ void LinearAlgebra::Matrix::SumMatrix(const Matrix &other) {
     }
 }
 
-void LinearAlgebra::Matrix::SubMatrix(const Matrix &other) {
+void LinearAlgebra::S21Matrix::SubMatrix(const S21Matrix &other) {
     if (other.rows != rows || other.columns != columns) {
         throw std::logic_error("Rows and columns should be the same");
     }
@@ -118,7 +122,7 @@ void LinearAlgebra::Matrix::SubMatrix(const Matrix &other) {
     }
 }
 
-void LinearAlgebra::Matrix::MulNumber(const double num) {
+void LinearAlgebra::S21Matrix::MulNumber(const double num) {
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < columns; j++) {
             (*this)(i, j) *= num;
@@ -126,13 +130,13 @@ void LinearAlgebra::Matrix::MulNumber(const double num) {
     }
 }
 
-void LinearAlgebra::Matrix::MulMatrix(const Matrix &other) {
+void LinearAlgebra::S21Matrix::MulMatrix(const S21Matrix &other) {
     if (columns != other.rows) {
         throw std::logic_error(
             "Columns of the left matrix shoud be equal to rows of the right one");
     }
 
-    Matrix result{rows, other.columns};
+    S21Matrix result{rows, other.columns};
 
     for (int i = 0; i < result.rows; i++) {
         for (int j = 0; j < result.columns; j++) {
@@ -145,8 +149,8 @@ void LinearAlgebra::Matrix::MulMatrix(const Matrix &other) {
     *this = std::move(result);
 }
 
-LinearAlgebra::Matrix LinearAlgebra::Matrix::Transpose() const {
-    Matrix result{GetColumns(), GetRows()};
+LinearAlgebra::S21Matrix LinearAlgebra::S21Matrix::Transpose() const {
+    S21Matrix result{GetCols(), GetRows()};
 
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < columns; j++) {
@@ -157,7 +161,7 @@ LinearAlgebra::Matrix LinearAlgebra::Matrix::Transpose() const {
     return result;
 }
 
-double LinearAlgebra::Matrix::Determinant() const {
+double LinearAlgebra::S21Matrix::Determinant() const {
     if (rows != columns) {
         throw std::logic_error("Determinant calculation error. Matrix should be squared");
     }
@@ -168,7 +172,7 @@ double LinearAlgebra::Matrix::Determinant() const {
         return At(0, 0);
     } else {
         int gaussFactor = 1;
-        LinearAlgebra::Matrix temp{*this};
+        LinearAlgebra::S21Matrix temp{*this};
         temp.GaussAlgo(&gaussFactor);
 
         answer *= gaussFactor;
@@ -183,7 +187,7 @@ double LinearAlgebra::Matrix::Determinant() const {
     return answer;
 }
 
-void LinearAlgebra::Matrix::GaussAlgo(int *gaussFactor) {
+void LinearAlgebra::S21Matrix::GaussAlgo(int *gaussFactor) {
     for (int i = 0; i < std::min(rows, columns); i++) {
         double element = At(i, i);
         int index = i;
@@ -209,7 +213,7 @@ void LinearAlgebra::Matrix::GaussAlgo(int *gaussFactor) {
     }
 }
 
-void LinearAlgebra::Matrix::SwapRows(int one, int another) {
+void LinearAlgebra::S21Matrix::SwapRows(int one, int another) {
     if (one >= rows || another >= rows) {
         throw std::invalid_argument("Invalid indexes of rows to swap");
     } else {
@@ -219,7 +223,7 @@ void LinearAlgebra::Matrix::SwapRows(int one, int another) {
     }
 }
 
-void LinearAlgebra::Matrix::AddRows(int one, int another, double factor) {
+void LinearAlgebra::S21Matrix::AddRows(int one, int another, double factor) {
     if (one >= rows || another >= rows) {
         throw std::invalid_argument("Invalid indexes of rows to swap");
     } else {
@@ -229,8 +233,8 @@ void LinearAlgebra::Matrix::AddRows(int one, int another, double factor) {
     }
 }
 
-LinearAlgebra::Matrix LinearAlgebra::Matrix::Minor(int row, int column) const {
-    Matrix minor{rows - 1, columns - 1};
+LinearAlgebra::S21Matrix LinearAlgebra::S21Matrix::Minor(int row, int column) const {
+    S21Matrix minor{rows - 1, columns - 1};
 
     int di = 0, dj = 0;
 
@@ -247,8 +251,8 @@ LinearAlgebra::Matrix LinearAlgebra::Matrix::Minor(int row, int column) const {
     return minor;
 }
 
-LinearAlgebra::Matrix LinearAlgebra::Matrix::CalcComplements() const {
-    Matrix result{rows, columns};
+LinearAlgebra::S21Matrix LinearAlgebra::S21Matrix::CalcComplements() const {
+    S21Matrix result{rows, columns};
 
     if (rows != columns) {
         throw std::logic_error("Impossible to calculate complements for not squared matrix");
@@ -261,7 +265,7 @@ LinearAlgebra::Matrix LinearAlgebra::Matrix::CalcComplements() const {
 
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < columns; j++) {
-            Matrix minor = Minor(i, j);
+            S21Matrix minor = Minor(i, j);
 
             int8_t sign = ((i + j) % 2 == 0) ? 1 : -1;
 
@@ -272,13 +276,13 @@ LinearAlgebra::Matrix LinearAlgebra::Matrix::CalcComplements() const {
     return result;
 }
 
-LinearAlgebra::Matrix LinearAlgebra::Matrix::InverseMatrix() const {
+LinearAlgebra::S21Matrix LinearAlgebra::S21Matrix::InverseMatrix() const {
     if (rows != columns) {
         throw std::logic_error(
             "To get inverse matrix, shape of the source matrix should be squared");
     }
 
-    Matrix result{rows, columns};
+    S21Matrix result{rows, columns};
 
     double determinant = Determinant();
     if (std::fabs(determinant) < EPS) {
@@ -291,10 +295,14 @@ LinearAlgebra::Matrix LinearAlgebra::Matrix::InverseMatrix() const {
     return result;
 }
 
-bool LinearAlgebra::Matrix::operator==(const Matrix &other) noexcept { return EqMatrix(other); }
-bool LinearAlgebra::Matrix::operator!=(const Matrix &other) noexcept { return !EqMatrix(other); }
+bool LinearAlgebra::S21Matrix::operator==(const S21Matrix &other) noexcept {
+    return EqMatrix(other);
+}
+bool LinearAlgebra::S21Matrix::operator!=(const S21Matrix &other) noexcept {
+    return !EqMatrix(other);
+}
 
-LinearAlgebra::Matrix &LinearAlgebra::Matrix::operator=(const Matrix &other) {
+LinearAlgebra::S21Matrix &LinearAlgebra::S21Matrix::operator=(const S21Matrix &other) {
     if (this != &other) {
         rows = other.rows;
         columns = other.columns;
@@ -307,7 +315,7 @@ LinearAlgebra::Matrix &LinearAlgebra::Matrix::operator=(const Matrix &other) {
     return *this;
 }
 
-LinearAlgebra::Matrix &LinearAlgebra::Matrix::operator=(Matrix &&other) noexcept {
+LinearAlgebra::S21Matrix &LinearAlgebra::S21Matrix::operator=(S21Matrix &&other) noexcept {
     if (this != &other) {
         std::swap(rows, other.rows);
         std::swap(columns, other.columns);
@@ -317,46 +325,46 @@ LinearAlgebra::Matrix &LinearAlgebra::Matrix::operator=(Matrix &&other) noexcept
     return *this;
 }
 
-LinearAlgebra::Matrix &LinearAlgebra::Matrix::operator+=(const Matrix &other) {
+LinearAlgebra::S21Matrix &LinearAlgebra::S21Matrix::operator+=(const S21Matrix &other) {
     SumMatrix(other);
     return *this;
 }
 
-LinearAlgebra::Matrix &LinearAlgebra::Matrix::operator-=(const Matrix &other) {
+LinearAlgebra::S21Matrix &LinearAlgebra::S21Matrix::operator-=(const S21Matrix &other) {
     SubMatrix(other);
     return *this;
 }
 
-LinearAlgebra::Matrix &LinearAlgebra::Matrix::operator*=(const double num) {
+LinearAlgebra::S21Matrix &LinearAlgebra::S21Matrix::operator*=(const double num) {
     MulNumber(num);
     return *this;
 }
 
-LinearAlgebra::Matrix &LinearAlgebra::Matrix::operator*=(const Matrix &other) {
+LinearAlgebra::S21Matrix &LinearAlgebra::S21Matrix::operator*=(const S21Matrix &other) {
     MulMatrix(other);
     return *this;
 }
 
-LinearAlgebra::Matrix LinearAlgebra::Matrix::operator+(const Matrix &other) const {
-    Matrix result{*this};
+LinearAlgebra::S21Matrix LinearAlgebra::S21Matrix::operator+(const S21Matrix &other) const {
+    S21Matrix result{*this};
     result.SumMatrix(other);
     return result;
 }
 
-LinearAlgebra::Matrix LinearAlgebra::Matrix::operator-(const Matrix &other) const {
-    Matrix result{*this};
+LinearAlgebra::S21Matrix LinearAlgebra::S21Matrix::operator-(const S21Matrix &other) const {
+    S21Matrix result{*this};
     result.SubMatrix(other);
     return result;
 }
 
-LinearAlgebra::Matrix LinearAlgebra::Matrix::operator*(const Matrix &other) const {
-    Matrix result{*this};
+LinearAlgebra::S21Matrix LinearAlgebra::S21Matrix::operator*(const S21Matrix &other) const {
+    S21Matrix result{*this};
     result.MulMatrix(other);
     return result;
 }
 
-LinearAlgebra::Matrix LinearAlgebra::Matrix::operator*(const double num) const {
-    Matrix result{*this};
+LinearAlgebra::S21Matrix LinearAlgebra::S21Matrix::operator*(const double num) const {
+    S21Matrix result{*this};
     result.MulNumber(num);
     return result;
 }

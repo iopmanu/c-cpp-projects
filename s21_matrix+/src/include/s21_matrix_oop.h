@@ -10,19 +10,19 @@
 #include <stdexcept>
 
 namespace LinearAlgebra {
-class Matrix {
+class S21Matrix {
 private:
     int rows, columns;
     double *matrix;
 
 public:
-    Matrix();
-    Matrix(int rows, int columns);
-    Matrix(const Matrix &other);
-    Matrix(Matrix &&other);
-    ~Matrix();
+    S21Matrix();
+    S21Matrix(int rows, int columns);
+    S21Matrix(const S21Matrix &other);
+    S21Matrix(S21Matrix &&other);
+    ~S21Matrix();
 
-    constexpr int GetColumns() const noexcept { return columns; }
+    constexpr int GetCols() const noexcept { return columns; }
     constexpr int GetRows() const noexcept { return rows; }
 
     double &operator()(int row, int col);
@@ -31,34 +31,34 @@ public:
     void SetRows(const int &rows_);
     void SetColumns(const int &columns);
 
-    Matrix operator+(const Matrix &other) const;
-    Matrix operator-(const Matrix &other) const;
-    Matrix operator*(const Matrix &other) const;
-    Matrix operator*(const double number) const;
+    S21Matrix operator+(const S21Matrix &other) const;
+    S21Matrix operator-(const S21Matrix &other) const;
+    S21Matrix operator*(const S21Matrix &other) const;
+    S21Matrix operator*(const double number) const;
 
-    bool operator==(const Matrix &other) noexcept;
-    bool operator!=(const Matrix &other) noexcept;
-    Matrix &operator=(const Matrix &other);
-    Matrix &operator=(Matrix &&other) noexcept;
-    Matrix &operator+=(const Matrix &other);
-    Matrix &operator-=(const Matrix &other);
-    Matrix &operator*=(const Matrix &other);
-    Matrix &operator*=(double number);
+    bool operator==(const S21Matrix &other) noexcept;
+    bool operator!=(const S21Matrix &other) noexcept;
+    S21Matrix &operator=(const S21Matrix &other);
+    S21Matrix &operator=(S21Matrix &&other) noexcept;
+    S21Matrix &operator+=(const S21Matrix &other);
+    S21Matrix &operator-=(const S21Matrix &other);
+    S21Matrix &operator*=(const S21Matrix &other);
+    S21Matrix &operator*=(double number);
 
-    bool EqMatrix(const Matrix &other) const;
-    void SumMatrix(const Matrix &other);
-    void SubMatrix(const Matrix &other);
+    bool EqMatrix(const S21Matrix &other) const;
+    void SumMatrix(const S21Matrix &other);
+    void SubMatrix(const S21Matrix &other);
     void MulNumber(const double num);
-    void MulMatrix(const Matrix &other);
+    void MulMatrix(const S21Matrix &other);
 
-    Matrix Transpose() const;
-    Matrix CalcComplements() const;
+    S21Matrix Transpose() const;
+    S21Matrix CalcComplements() const;
     double Determinant() const;
     void GaussAlgo(int *gaussFactor);
     void SwapRows(int one, int another);
     void AddRows(int one, int another, double factor);
-    Matrix Minor(int row, int column) const;
-    Matrix InverseMatrix() const;
+    S21Matrix Minor(int row, int column) const;
+    S21Matrix InverseMatrix() const;
 };
 }  // namespace LinearAlgebra
 
